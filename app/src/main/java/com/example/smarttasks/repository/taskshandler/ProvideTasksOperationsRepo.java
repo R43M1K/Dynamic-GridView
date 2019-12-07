@@ -125,7 +125,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                     taskParams.put("taskListRealName", taskListRealName);
                     taskList.add(taskParams);
                 } while (cursor.moveToNext());
-                Log.d(TAG, "Got list items from table");
+                Log.d(TAG, "Got all list items from table");
             }
             cursor.close();
         }
@@ -134,14 +134,15 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
 
     @Override
     public ArrayList<String> getAllTableNames() {
-        //TODO When new db created it's also adding 2 additional tables, and one empty table
-        // Remember when first time calling this method in empty db, it will give 3 tables, delete them before using db and showing to user
         ArrayList<String> tableNames = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
         if(cursor != null) {
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
-                    tableNames.add(cursor.getString(cursor.getColumnIndex("name")));
+                    String tableName = cursor.getString(cursor.getColumnIndex("name"));
+                    if(tableName.contains("myTasksTable") ) {
+                        tableNames.add(tableName);
+                    }
                     cursor.moveToNext();
                 }
             }

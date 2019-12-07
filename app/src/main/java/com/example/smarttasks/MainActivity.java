@@ -47,42 +47,26 @@ public class MainActivity extends AppCompatActivity {
         gridView = findViewById(R.id.grid_view);
         button = findViewById(R.id.add_button);
 
-        /*
-        ArrayList<String> myList = new ArrayList<>();
-        myList.add("Get children from kindergarden");
-        myList.add("Buy eggs , bread, nutella, coca-cola, milk, butter, kitkat, twix from magazine in a way from home");
-        myList.add("Delete League of Legends");
-        mainViewModel.addTasksList("My First Task", myList);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> myList = new ArrayList<>();
+                myList.add("Get children from kindergarden");
+                myList.add("Buy eggs , bread, nutella, coca-cola, milk, butter, kitkat, twix from magazine in a way from home");
+                myList.add("Delete League of Legends");
+                mainViewModel.addTasksList("My First Task List", myList);
+                mainGridViewAdapter.notifyDataSetChanged();
+            }
+        });
 
-         */
 
-
-        //mainViewModel.removeTasksList("myTasksTable36");
+        //mainViewModel.removeTasksList("myTasksTable60");
 
         mainGridViewAdapter = new MainGridViewAdapter(getApplicationContext(), mainViewModel, lifecycleOwner);
         gridView.setAdapter(mainGridViewAdapter);
 
-
     }
 
-    //Read all Table names, remove tables that are default , and leave one empty table
-    //Next when you need create first table, you should search for that empty table and use it to store first table data
-        /*
-        ArrayList<String> newList = new ArrayList<>();
-        mainViewModel.getAllTableNames();
-        mainViewModel.getNames().observe(MainActivity.this, new Observer<ArrayList<String>>() {
-            @Override
-            public void onChanged(ArrayList<String> strings) {
-                newList.clear();
-                for(int i=0; i<strings.size(); i++) {
-                    if(strings.get(i).contains("myTasksTable")) {
-                        newList.add(strings.get(i));
-                    }
-                }
-                newList.size();
-            }
-        });
-        */
     //TODO Before creating new table, check if there is an empty table in database, if it is there
     // Then just call addTasks() and insert list into table. If there is no  empty table in database
     // First call getApplicationContext().deleteSharedPreferences("lastTaskListId")

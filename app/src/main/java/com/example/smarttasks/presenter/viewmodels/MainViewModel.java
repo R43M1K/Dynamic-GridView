@@ -61,6 +61,7 @@ public class MainViewModel extends ViewModel {
     }
 
     public void getAllTasks(String tasksListTableName) {
+        /*
         compositeDisposable.add(Single.fromCallable(() -> tasksOperationsUseCase.getAllTasks(tasksListTableName))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -68,7 +69,8 @@ public class MainViewModel extends ViewModel {
                             allTasksList.setValue(hashMaps);
                             Log.d(TAG, "Tasklist added to LiveData");
                           }));
-
+*/
+        allTasksList.setValue(tasksOperationsUseCase.getAllTasks(tasksListTableName));
     }
 
     public LiveData<ArrayList<HashMap>> get() {
@@ -76,6 +78,7 @@ public class MainViewModel extends ViewModel {
     }
 
     public void getAllTableNames() {
+        /*
         compositeDisposable.add(Single.fromCallable(() -> tasksOperationsUseCase.getAllTableNames())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -83,6 +86,8 @@ public class MainViewModel extends ViewModel {
                     allTableNamesList.setValue(arrayList);
                     Log.d(TAG, "TableNameList added to LiveData");
                 }));
+         */
+        allTableNamesList.setValue(tasksOperationsUseCase.getAllTableNames());
     }
 
     public LiveData<ArrayList<String>> getNames() {

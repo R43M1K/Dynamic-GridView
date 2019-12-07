@@ -21,6 +21,10 @@ import java.util.HashMap;
 
 public class MainGridViewAdapter extends BaseAdapter {
 
+    //Constants
+    private final String TAG = getClass().toString();
+
+    //View
     private Context context;
     private LayoutInflater inflater;
     private MainViewModel mainViewModel;
@@ -43,12 +47,7 @@ public class MainGridViewAdapter extends BaseAdapter {
             @Override
             public void onChanged(ArrayList<String> strings) {
                 newList.clear();
-                for(int i=0; i<strings.size(); i++) {
-                    if(strings.get(i).contains("myTasksTable")) {
-                        newList.add(strings.get(i));
-                    }
-                }
-
+                newList.addAll(strings);
             }
         });
 
@@ -62,7 +61,6 @@ public class MainGridViewAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        Log.d("GridView", newList.get(position));
         return position;
     }
 
@@ -85,8 +83,8 @@ public class MainGridViewAdapter extends BaseAdapter {
                 public void onChanged(ArrayList<HashMap> hashMaps) {
                     int unfinishedTaskCount = 0;
                     if(!hashMaps.isEmpty()) {
+                        linearLayout.removeAllViews();
                         title.setText(hashMaps.get(0).get("taskListRealName").toString());
-                        unfinishedTasks.setText(String.valueOf(unfinishedTaskCount));
                         for(int i=0; i<hashMaps.size(); i++) {
                             if (hashMaps.get(i).get("taskFinished").equals("Active")) {
                                TextView task = new TextView(context);
@@ -97,10 +95,17 @@ public class MainGridViewAdapter extends BaseAdapter {
                                linearLayout.addView(task);
                             }
                         }
+                        unfinishedTasks.setText(String.valueOf(unfinishedTaskCount));
+                    }else{
+                        mainViewModel.removeTasksList(newList.get(position));
+                        //TODO anotiate method below.
+                        //context.deleteSharedPreferences("lastTaskListId");
+                        Log.d(TAG, "Empty table removed");
                     }
                 }
             });
         }
+        Log.d(TAG, "GridView Updated");
         return convertView;
     }
 

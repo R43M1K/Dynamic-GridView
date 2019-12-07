@@ -14,7 +14,7 @@ import com.example.smarttasks.repository.services.preferences.PreferencesService
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private final String TAG = getDatabaseName();
-    private static final String DATABASE_NAME = "testSmartTasks6.db";//"smartTasks.db";
+    private static final String DATABASE_NAME = "testSmartTasks7.db";//"smartTasks.db";
     private static final int DATABASE_VERSION = 1;
     private static String TABLE_NAME;
 
