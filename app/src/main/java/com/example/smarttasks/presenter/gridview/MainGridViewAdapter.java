@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,24 +34,16 @@ public class MainGridViewAdapter extends BaseAdapter {
     //Vars
     final ArrayList<String> newList;
 
-    public MainGridViewAdapter(Context context, MainViewModel mainViewModel, LifecycleOwner lifecycleOwner) {
+    public MainGridViewAdapter(Context context, MainViewModel mainViewModel, LifecycleOwner lifecycleOwner, ArrayList<String> newList) {
         this.context = context;
         this.mainViewModel = mainViewModel;
         this.lifecycleOwner = lifecycleOwner;
-        newList = new ArrayList<>();
+        this.newList = newList;
     }
 
     @Override
     public int getCount() {
-        mainViewModel.getAllTableNames();
-        mainViewModel.getNames().observe(lifecycleOwner, new Observer<ArrayList<String>>() {
-            @Override
-            public void onChanged(ArrayList<String> strings) {
-                newList.clear();
-                newList.addAll(strings);
-            }
-        });
-
+        Log.d(TAG, "NewList size is " + newList.size());
         return newList.size();
     }
 
@@ -61,6 +54,7 @@ public class MainGridViewAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
+        Log.d(TAG, "You are on " + position);
         return position;
     }
 
@@ -108,5 +102,6 @@ public class MainGridViewAdapter extends BaseAdapter {
         Log.d(TAG, "GridView Updated");
         return convertView;
     }
+
 
 }
