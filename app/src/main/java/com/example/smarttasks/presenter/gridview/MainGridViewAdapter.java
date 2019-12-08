@@ -32,13 +32,13 @@ public class MainGridViewAdapter extends BaseAdapter {
     private LifecycleOwner lifecycleOwner;
 
     //Vars
-    final ArrayList<String> newList;
+    ArrayList<String> newList;
 
-    public MainGridViewAdapter(Context context, MainViewModel mainViewModel, LifecycleOwner lifecycleOwner, ArrayList<String> newList) {
+    public MainGridViewAdapter(Context context, MainViewModel mainViewModel, LifecycleOwner lifecycleOwner) {
         this.context = context;
         this.mainViewModel = mainViewModel;
         this.lifecycleOwner = lifecycleOwner;
-        this.newList = newList;
+        newList = new ArrayList<>();
     }
 
     @Override
@@ -70,31 +70,35 @@ public class MainGridViewAdapter extends BaseAdapter {
         final TextView unfinishedTasks = convertView.findViewById(R.id.unfinished_size);
         final LinearLayout linearLayout = convertView.findViewById(R.id.tasks_layout);
 
+        ArrayList<Integer> tableCounter = new ArrayList<>();
         if(!newList.get(position).isEmpty()) {
             mainViewModel.getAllTasks(newList.get(position));
             mainViewModel.get().observe(lifecycleOwner, new Observer<ArrayList<HashMap>>() {
                 @Override
                 public void onChanged(ArrayList<HashMap> hashMaps) {
-                    int unfinishedTaskCount = 0;
-                    if(!hashMaps.isEmpty()) {
-                        linearLayout.removeAllViews();
-                        title.setText(hashMaps.get(0).get("taskListRealName").toString());
-                        for(int i=0; i<hashMaps.size(); i++) {
-                            if (hashMaps.get(i).get("taskFinished").equals("Active")) {
-                               TextView task = new TextView(context);
-                               task.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT));
-                               task.setText(hashMaps.get(i).get("taskName").toString());
-                               unfinishedTaskCount++;
-                               linearLayout.addView(task);
+                    if (tableCounter.isEmpty() || !tableCounter.contains(position)) {
+                        tableCounter.add(position);
+                        int unfinishedTaskCount = 0;
+                        if (!hashMaps.isEmpty()) {
+                            linearLayout.removeAllViews();
+                            title.setText(hashMaps.get(0).get("taskListRealName").toString());
+                            for (int i = 0; i < hashMaps.size(); i++) {
+                                if (hashMaps.get(i).get("taskFinished").equals("Active")) {
+                                    TextView task = new TextView(context);
+                                    task.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                                    task.setText(hashMaps.get(i).get("taskName").toString());
+                                    unfinishedTaskCount++;
+                                    linearLayout.addView(task);
+                                }
                             }
+                            unfinishedTasks.setText(String.valueOf(unfinishedTaskCount));
+                        } else {
+                            mainViewModel.removeTasksList(newList.get(position));
+                            //TODO anotiate method below.
+                            //context.deleteSharedPreferences("lastTaskListId");
+                            Log.d(TAG, "Empty table removed");
                         }
-                        unfinishedTasks.setText(String.valueOf(unfinishedTaskCount));
-                    }else{
-                        mainViewModel.removeTasksList(newList.get(position));
-                        //TODO anotiate method below.
-                        //context.deleteSharedPreferences("lastTaskListId");
-                        Log.d(TAG, "Empty table removed");
                     }
                 }
             });
@@ -103,5 +107,9 @@ public class MainGridViewAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void refresh(ArrayList<String> tableNames) {
+        newList.clear();
+        newList = tableNames;
+    }
 
 }

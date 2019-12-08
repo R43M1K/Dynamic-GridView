@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     RelativeLayout removeLayout;
 
     //Vars
+    private ArrayList<String> tableNames;
     private int pos;
 
     @Override
@@ -54,16 +55,25 @@ public class MainActivity extends AppCompatActivity {
         removeLayout = findViewById(R.id.remove_layout);
         removeButton = findViewById(R.id.remove_button);
 
-        //mainViewModel.removeTasksList("myTasksTable72");
 
+        mainGridViewAdapter = new MainGridViewAdapter(getApplicationContext(), mainViewModel, lifecycleOwner);
+        gridView.setAdapter(mainGridViewAdapter);
+
+        tableNames = new ArrayList<>();
         mainViewModel.getAllTableNames();
         mainViewModel.getNames().observe(this, new Observer<ArrayList<String>>() {
             @Override
             public void onChanged(ArrayList<String> strings) {
-                mainGridViewAdapter = new MainGridViewAdapter(getApplicationContext(), mainViewModel, lifecycleOwner, strings);
-                gridView.setAdapter(mainGridViewAdapter);
+                tableNames = strings;
+                mainGridViewAdapter.refresh(tableNames);
+                mainGridViewAdapter.notifyDataSetChanged();
             }
         });
+
+
+
+
+
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,14 +82,8 @@ public class MainActivity extends AppCompatActivity {
                 myList.add("Get children from kindergarden");
                 //myList.add("Buy eggs , bread, nutella, coca-cola, milk, butter, kitkat, twix from magazine in a way from home");
                 //myList.add("Delete League of Legends");
-                mainViewModel.addTasksList("My First Task List", myList);
+                mainViewModel.addTasksList("My Second Task List", myList);
                 mainViewModel.getAllTableNames();
-                mainViewModel.getNames().observe(lifecycleOwner, new Observer<ArrayList<String>>() {
-                    @Override
-                    public void onChanged(ArrayList<String> arrayList) {
-                        mainGridViewAdapter.notifyDataSetChanged();
-                    }
-                });
             }
         });
 
@@ -117,12 +121,6 @@ public class MainActivity extends AppCompatActivity {
                             mainViewModel.getAllTableNames();
                             addButton.setVisibility(View.VISIBLE);
                             removeLayout.setVisibility(View.GONE);
-                            mainViewModel.getNames().observe(lifecycleOwner, new Observer<ArrayList<String>>() {
-                                @Override
-                                public void onChanged(ArrayList<String> arrayList) {
-                                    mainGridViewAdapter.notifyDataSetChanged();
-                                }
-                            });
                         }
                     }
                 });
