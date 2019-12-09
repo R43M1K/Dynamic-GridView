@@ -80,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ArrayList<String> myList = new ArrayList<>();
                 myList.add("Get children from kindergarden");
-                //myList.add("Buy eggs , bread, nutella, coca-cola, milk, butter, kitkat, twix from magazine in a way from home");
-                //myList.add("Delete League of Legends");
+                myList.add("Buy eggs , bread, nutella, coca-cola, milk, butter, kitkat, twix from magazine in a way from home");
+                myList.add("Delete League of Legends");
                 mainViewModel.addTasksList("My Second Task List", myList);
                 mainViewModel.getAllTableNames();
             }

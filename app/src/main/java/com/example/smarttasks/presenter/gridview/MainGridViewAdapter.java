@@ -1,13 +1,11 @@
 package com.example.smarttasks.presenter.gridview;
 
 import android.content.Context;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,24 +30,24 @@ public class MainGridViewAdapter extends BaseAdapter {
     private LifecycleOwner lifecycleOwner;
 
     //Vars
-    ArrayList<String> newList;
+    ArrayList<String> tableNames;
 
     public MainGridViewAdapter(Context context, MainViewModel mainViewModel, LifecycleOwner lifecycleOwner) {
         this.context = context;
         this.mainViewModel = mainViewModel;
         this.lifecycleOwner = lifecycleOwner;
-        newList = new ArrayList<>();
+        tableNames = new ArrayList<>();
     }
 
     @Override
     public int getCount() {
-        Log.d(TAG, "NewList size is " + newList.size());
-        return newList.size();
+        Log.d(TAG, "NewList size is " + tableNames.size());
+        return tableNames.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return newList.get(position);
+        return tableNames.get(position);
     }
 
     @Override
@@ -71,8 +69,8 @@ public class MainGridViewAdapter extends BaseAdapter {
         final LinearLayout linearLayout = convertView.findViewById(R.id.tasks_layout);
 
         ArrayList<Integer> tableCounter = new ArrayList<>();
-        if(!newList.get(position).isEmpty()) {
-            mainViewModel.getAllTasks(newList.get(position));
+        if(!tableNames.get(position).isEmpty()) {
+            mainViewModel.getAllTasks(tableNames.get(position));
             mainViewModel.get().observe(lifecycleOwner, new Observer<ArrayList<HashMap>>() {
                 @Override
                 public void onChanged(ArrayList<HashMap> hashMaps) {
@@ -94,7 +92,7 @@ public class MainGridViewAdapter extends BaseAdapter {
                             }
                             unfinishedTasks.setText(String.valueOf(unfinishedTaskCount));
                         } else {
-                            mainViewModel.removeTasksList(newList.get(position));
+                            mainViewModel.removeTasksList(tableNames.get(position));
                             //TODO anotiate method below.
                             //context.deleteSharedPreferences("lastTaskListId");
                             Log.d(TAG, "Empty table removed");
@@ -108,8 +106,8 @@ public class MainGridViewAdapter extends BaseAdapter {
     }
 
     public void refresh(ArrayList<String> tableNames) {
-        newList.clear();
-        newList = tableNames;
+        this.tableNames.clear();
+        this.tableNames = tableNames;
     }
 
 }
