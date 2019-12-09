@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ///pepepepep
     //Constants
     private final String TAG = getClass().toString();
 
