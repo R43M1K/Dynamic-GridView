@@ -1,6 +1,9 @@
 package com.example.smarttasks;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -14,12 +17,16 @@ import android.widget.GridView;
 import android.widget.RelativeLayout;
 
 import com.example.smarttasks.presenter.ViewModelFactory;
+import com.example.smarttasks.presenter.fragments.TaskListViewFragment;
 import com.example.smarttasks.presenter.gridview.MainGridViewAdapter;
+import com.example.smarttasks.presenter.recyclerview.SingleTask;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
+import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TaskListViewFragment.OnFragmentInteractionListener{
 
     //Constants
     private final String TAG = getClass().toString();
@@ -29,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel mainViewModel;
     private MainGridViewAdapter mainGridViewAdapter;
     private LifecycleOwner lifecycleOwner;
+    private Fragment fragment = new TaskListViewFragment();
 
     //UI
     GridView gridView;
@@ -38,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Vars
     private ArrayList<String> tableNames;
+    private TasksPoJo tasksPoJo;
     private int pos;
 
     @Override
@@ -46,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         lifecycleOwner = MainActivity.this;
+        tasksPoJo = TasksPoJo.getInstance();
 
         factory = new ViewModelFactory(getApplicationContext());
         mainViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
@@ -71,38 +81,35 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList<String> myList = new ArrayList<>();
-                myList.add("Get children from kindergarden");
-                myList.add("Buy eggs , bread, nutella, coca-cola, milk, butter, kitkat, twix from magazine in a way from home");
-                myList.add("Delete League of Legends");
-                mainViewModel.addTasksList("My Second Task List", myList);
-                mainViewModel.getAllTableNames();
-            }
+        addButton.setOnClickListener(v -> {
+            tasksPoJo.clear();
+            callFragment();
         });
 
-        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                addButton.setVisibility(View.GONE);
-                removeLayout.setVisibility(View.VISIBLE);
-                pos = (int) id;
-                Log.d(TAG, "You have hold " + id);
-                return true;
-            }
+        gridView.setOnItemLongClickListener((parent, view, position, id) -> {
+            addButton.setVisibility(View.GONE);
+            removeLayout.setVisibility(View.VISIBLE);
+            pos = (int) id;
+            Log.d(TAG, "You have hold " + id);
+            return true;
         });
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "You have clicked on " + id);
-            }
+        gridView.setOnItemClickListener((parent, view, position, id) -> {
+            Log.d(TAG, "You have clicked on " + id);
+            pos = (int) id;
+            ArrayList<SingleTask> tasks = new ArrayList<>();
+            mainViewModel.getAllTasks(tableNames.get(pos));
+            mainViewModel.get().observe(lifecycleOwner, hashMaps -> {
+                tasksPoJo.setTaskListName((String) hashMaps.get(0).get("taskListRealName"));
+                for(int i=0; i<hashMaps.size(); i++) {
+                    String task = (String) hashMaps.get(i).get("taskName");
+                    String taskState = (String) hashMaps.get(i).get("taskFinished");
+                    SingleTask currentTask = new SingleTask(task,taskState);
+                    tasks.add(currentTask);
+                }
+            });
+            tasksPoJo.setTasks(tasks);
+            callFragment();
         });
 
         removeButtonPressed();
@@ -127,6 +134,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void callFragment() {
+        addButton.setVisibility(View.GONE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragment_frame, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Boolean fragmentClosed) {
+        if(fragmentClosed) {
+            addButton.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     //TODO Before creating new table, check if there is an empty table in database, if it is there
     // Then just call addTasks() and insert list into table. If there is no  empty table in database

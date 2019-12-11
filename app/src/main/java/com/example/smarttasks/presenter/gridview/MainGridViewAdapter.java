@@ -62,7 +62,7 @@ public class MainGridViewAdapter extends BaseAdapter {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
         if(convertView == null) {
-            convertView = inflater.inflate(R.layout.task_item, null);
+            convertView = inflater.inflate(R.layout.task_item_grid_view, null);
         }
         final TextView title = convertView.findViewById(R.id.title);
         final TextView unfinishedTasks = convertView.findViewById(R.id.unfinished_size);

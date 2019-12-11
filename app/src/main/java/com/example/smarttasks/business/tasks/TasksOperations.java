@@ -1,7 +1,6 @@
 package com.example.smarttasks.business.tasks;
 
 import com.example.smarttasks.repository.ProvideTasksOperationsInter;
-import com.example.smarttasks.repository.services.tasks.ProvideTasksInter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

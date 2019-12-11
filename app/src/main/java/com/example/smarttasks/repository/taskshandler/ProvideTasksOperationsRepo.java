@@ -50,7 +50,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                 db.insert(TABLE_NAME, null, contentValues);
             }
         }
-        Log.d(TAG, "Task list is added to table");
+        Log.d(TAG, "SingleTask list is added to table");
     }
 
     @Override
