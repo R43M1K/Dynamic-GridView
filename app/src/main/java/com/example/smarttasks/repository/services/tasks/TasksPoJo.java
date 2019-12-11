@@ -7,6 +7,8 @@ import java.util.ArrayList;
 public class TasksPoJo {
 
     private ArrayList<SingleTask> tasks = new ArrayList<>();
+    private ArrayList<Integer> tasksIds = new ArrayList<>();
+    private String taskListRealName;
     private String taskListName;
 
     private static TasksPoJo INSTANCE = null;
@@ -26,6 +28,7 @@ public class TasksPoJo {
 
     public void clear() {
         tasks.clear();
+        taskListRealName = "";
         taskListName = "";
     }
 
@@ -37,11 +40,27 @@ public class TasksPoJo {
         this.tasks = tasks;
     }
 
+    public String getTaskListRealName() {
+        return taskListRealName;
+    }
+
+    public void setTaskListRealName(String taskListRealName) {
+        this.taskListRealName = taskListRealName;
+    }
+
     public String getTaskListName() {
         return taskListName;
     }
 
     public void setTaskListName(String taskListName) {
         this.taskListName = taskListName;
+    }
+
+    public ArrayList<Integer> getTasksIds() {
+        return tasksIds;
+    }
+
+    public void setTasksIds(ArrayList<Integer> tasksIds) {
+        this.tasksIds = tasksIds;
     }
 }

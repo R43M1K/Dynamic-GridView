@@ -1,5 +1,7 @@
 package com.example.smarttasks.presenter.viewmodels;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
-public class MainViewModel extends ViewModel {
+public class MainViewModel extends ViewModel implements Parcelable {
 
     //Vars
     private final String TAG = getClass().toString();
@@ -54,6 +56,10 @@ public class MainViewModel extends ViewModel {
 
     public void removeTasks(String taskListName, ArrayList<Integer> indexList) {
         tasksOperationsUseCase.removeTasks(taskListName, indexList);
+    }
+
+    public void removeTask(String taskListName, Integer taskId) {
+        tasksOperationsUseCase.removeTask(taskListName, taskId);
     }
 
     public void updateTasks(String taskListName, int rowId, String taskName, String taskFinished) {
@@ -100,5 +106,15 @@ public class MainViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
         compositeDisposable.clear();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }

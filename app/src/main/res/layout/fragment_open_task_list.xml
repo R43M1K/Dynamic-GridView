@@ -32,8 +32,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textColor="#1b79f5"
-            android:layout_gravity="center"
-            android:text="Active Tasks"/>
+            android:layout_gravity="center"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/active_recycler_view"
@@ -46,8 +45,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textColor="#11f574"
-            android:layout_gravity="center"
-            android:text="Finished Tasks"/>
+            android:layout_gravity="center"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/finished_recycle_view"

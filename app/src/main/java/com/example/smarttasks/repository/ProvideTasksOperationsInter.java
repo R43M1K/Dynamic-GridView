@@ -13,6 +13,8 @@ public interface ProvideTasksOperationsInter {
 
     void removeTasks(String taskListName, ArrayList<Integer> indexList);
 
+    void removeTask(String taskListName, Integer taskId);
+
     void updateTasks(String taskListName, int rowId, String taskName, String taskFinished);
 
     ArrayList<HashMap> getAllTasks(String taskListTableName);

@@ -35,6 +35,11 @@ public class TasksOperations implements TasksOperationsUseCase {
     }
 
     @Override
+    public void removeTask(String taskListName, Integer taskId) {
+        provideTasksOperationsInter.removeTask(taskListName, taskId);
+    }
+
+    @Override
     public void updateTasks(String taskListName, int rowId, String taskName, String taskFinished) {
         provideTasksOperationsInter.updateTasks(taskListName, rowId, taskName, taskFinished);
     }

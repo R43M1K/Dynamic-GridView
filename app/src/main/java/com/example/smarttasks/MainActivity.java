@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
@@ -24,7 +23,6 @@ import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements TaskListViewFragment.OnFragmentInteractionListener{
 
@@ -83,7 +81,14 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
 
         addButton.setOnClickListener(v -> {
             tasksPoJo.clear();
-            callFragment();
+
+            ArrayList<String> tasklist = new ArrayList<>();
+            tasklist.add("ABCDEF");
+            tasklist.add("GHIJKLMNOP");
+            tasklist.add("QRSTUVW");
+            mainViewModel.addTasksList("My 3rd Task", tasklist);
+
+            //callFragment();
         });
 
         gridView.setOnItemLongClickListener((parent, view, position, id) -> {
@@ -98,17 +103,25 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
             Log.d(TAG, "You have clicked on " + id);
             pos = (int) id;
             ArrayList<SingleTask> tasks = new ArrayList<>();
+            ArrayList<Integer> taskIds = new ArrayList<>();
             mainViewModel.getAllTasks(tableNames.get(pos));
             mainViewModel.get().observe(lifecycleOwner, hashMaps -> {
-                tasksPoJo.setTaskListName((String) hashMaps.get(0).get("taskListRealName"));
-                for(int i=0; i<hashMaps.size(); i++) {
-                    String task = (String) hashMaps.get(i).get("taskName");
-                    String taskState = (String) hashMaps.get(i).get("taskFinished");
-                    SingleTask currentTask = new SingleTask(task,taskState);
-                    tasks.add(currentTask);
+                if(!tableNames.isEmpty()) {
+                    tasksPoJo.setTaskListRealName((String) hashMaps.get(0).get("taskListRealName"));
+                    String currentTableName = tableNames.get(pos);
+                    tasksPoJo.setTaskListName(currentTableName);
+                    for (int i = 0; i < hashMaps.size(); i++) {
+                        String task = (String) hashMaps.get(i).get("taskName");
+                        String taskState = (String) hashMaps.get(i).get("taskFinished");
+                        Integer taskId = Integer.valueOf((String) hashMaps.get(i).get("taskId"));
+                        SingleTask currentTask = new SingleTask(task, taskState);
+                        tasks.add(currentTask);
+                        taskIds.add(taskId);
+                    }
                 }
             });
             tasksPoJo.setTasks(tasks);
+            tasksPoJo.setTasksIds(taskIds);
             callFragment();
         });
 
@@ -137,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
 
     private void callFragment() {
         addButton.setVisibility(View.GONE);
+        Bundle arguments = new Bundle();
+        arguments.putParcelable("mainViewModel", mainViewModel);
+        fragment.setArguments(arguments);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragment_frame, fragment);
@@ -144,9 +160,19 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
         fragmentTransaction.commit();
     }
 
+    //Fragment response
     @Override
     public void onFragmentInteraction(Boolean fragmentClosed) {
         if(fragmentClosed) {
+            if(!fragment.isDetached()) {
+                //Remove fragment and get all table tasks again
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.remove(fragment);
+                fragmentTransaction.commit();
+                pos = 0;
+                mainViewModel.getAllTableNames();
+            }
             addButton.setVisibility(View.VISIBLE);
         }
     }

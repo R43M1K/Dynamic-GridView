@@ -91,6 +91,19 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
     }
 
     @Override
+    public void removeTask(String taskListTableName, Integer taskId) {
+        preferences.put("currentTableName", taskListTableName);
+        TABLE_NAME = taskListTableName;
+        if(!taskListTableName.isEmpty()) {
+            String where = DatabaseParams.DatabaseConstants._ID + " = ?";
+            String rowID = String.valueOf(taskId);
+            String[] what = {rowID};
+            db.delete(taskListTableName, where, what);
+            Log.d(TAG, "Task removed");
+        }
+    }
+
+    @Override
     public void updateTasks(String taskListTableName, int rowId, String taskName, String taskFinished) {
         preferences.put("currentTableName", taskListTableName);
         TABLE_NAME = taskListTableName;
