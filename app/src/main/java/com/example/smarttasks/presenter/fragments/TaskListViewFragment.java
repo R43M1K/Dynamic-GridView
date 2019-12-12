@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,10 +23,12 @@ import com.example.smarttasks.R;
 import com.example.smarttasks.presenter.recyclerview.ActiveTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.recyclerview.FinishedTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.recyclerview.SingleTask;
+import com.example.smarttasks.presenter.recyclerview.OnClickInter;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TaskListViewFragment extends Fragment {
 
@@ -41,6 +44,7 @@ public class TaskListViewFragment extends Fragment {
     private TextView activeTaskCountView;
     private TextView finishedTaskCountView;
     private Button addTaskView;
+    private Button saveTaskView;
 
     //RecyclerView classes
     private RecyclerView activeRecyclerView;
@@ -89,7 +93,10 @@ public class TaskListViewFragment extends Fragment {
         finishedTasksList.clear();
         taskList.clear();
 
+
         tasksPoJo = TasksPoJo.getInstance();
+        taskListIds = tasksPoJo.getTasksIds();
+
         // Initialize Views
         taskListNameView = view.findViewById(R.id.task_list_name);
         if(tasksPoJo.getTaskListRealName() != null && !tasksPoJo.getTaskListRealName().isEmpty()) {
@@ -97,6 +104,7 @@ public class TaskListViewFragment extends Fragment {
         }
 
         addTaskView = view.findViewById(R.id.add_button_fragment);
+        saveTaskView = view.findViewById(R.id.save_button_fragment);
 
         // Calculate active and finished tasks counts
         activeTaskCountView = view.findViewById(R.id.active_tasks);
@@ -147,16 +155,17 @@ public class TaskListViewFragment extends Fragment {
                 int position = viewHolder.getAdapterPosition();
                 deleteTask(position);
             }
+
         };
 
 
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(activeRecyclerView);
-
-        activeAdapter.setOnItemClickListener(position -> {
-            //This is if user clicked on whole line of RecyclerViews line in position "position"
-            Log.d("recycler item click: ", "item clicked by position: " + position);
+        activeAdapter.getCurrentTask().observe(this, hashMap -> {
+            activeTasksList.set(((Integer) hashMap.get("position")), (String) hashMap.get("taskText"));
         });
+
+        saveButtonClick();
 
         return view;
     }
@@ -169,6 +178,7 @@ public class TaskListViewFragment extends Fragment {
             //Update task from task list to 'Finished' from database
             taskListIds = tasksPoJo.getTasksIds();
             mainViewModel.updateTasks(taskListName, taskListIds.get(position), currentTask, CHANGE_TO_FINISHED);
+            taskListIds.remove(position);
             finishedTasksList.add(currentTask);
             String finishedCountText = finishedTasksList.size() + FINISHED_TASKS_TEXT;
             finishedTaskCountView.setText(finishedCountText);
@@ -189,6 +199,16 @@ public class TaskListViewFragment extends Fragment {
     private void addButtonClick() {
         addTaskView.setOnClickListener(v -> {
             //TODO call another fragment to add task in EditView
+        });
+    }
+
+    private void saveButtonClick() {
+        saveTaskView.setOnClickListener(v -> {
+            for(int i=0; i<activeTasksList.size(); i++) {
+                String newTask = activeTasksList.get(i);
+                Integer rowId = taskListIds.get(i);
+                mainViewModel.updateTasks(tasksPoJo.getTaskListName(), rowId, newTask, CHANGE_TO_ACTIVE);
+            }
         });
     }
 

@@ -1,5 +1,8 @@
 package com.example.smarttasks.presenter.recyclerview;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,19 +10,27 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarttasks.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasksRecyclerAdapter.TaskViewHolder> {
 
+    //Constants
+    private final String TAG = getClass().toString();
+
     private ArrayList<String> activeTasks;
     private OnItemClickListener mListener;
+    private HashMap currentTask;
+    private MutableLiveData<HashMap> taskLive = new MutableLiveData<>();
 
     public ActiveTasksRecyclerAdapter(ArrayList<String> activeTasks) {
         this.activeTasks = activeTasks;
+        currentTask = new HashMap();
     }
 
     public interface OnItemClickListener {
@@ -32,28 +43,26 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
 
+
         public EditText activeTask;
         public TextView activeTaskId;
 
         public TaskViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
 
-
             activeTask = itemView.findViewById(R.id.active_view);
             activeTaskId = itemView.findViewById(R.id.active_task_id);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(listener != null){
-                        int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
-                            listener.onItemClick(position);
-                        }
+            itemView.setOnClickListener(v -> {
+                if(listener != null){
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(position);
                     }
                 }
             });
         }
+
     }
 
     @NonNull
@@ -68,12 +77,37 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
         if(activeTasks != null && !activeTasks.isEmpty()) {
             holder.activeTaskId.setText(String.valueOf(position));
             holder.activeTask.setText(activeTasks.get(position));
+            final Integer pos = position;
+            holder.activeTask.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    currentTask.put("position", pos);
+                    currentTask.put("taskText", s.toString());
+                    taskLive.setValue(currentTask);
+                    Log.d(TAG, "EditText was changed");
+                }
+            });
         }
+    }
+
+    public MutableLiveData<HashMap> getCurrentTask() {
+        return taskLive;
     }
 
     @Override
     public int getItemCount() {
         return activeTasks.size();
     }
+
 
 }

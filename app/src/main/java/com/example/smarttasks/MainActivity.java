@@ -86,6 +86,24 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
             tasklist.add("ABCDEF");
             tasklist.add("GHIJKLMNOP");
             tasklist.add("QRSTUVW");
+            tasklist.add("ABCDEF");
+            tasklist.add("GHIJKLMNOP");
+            tasklist.add("QRSTUVW");
+            tasklist.add("ABCDEF");
+            tasklist.add("GHIJKLMNOP");
+            tasklist.add("QRSTUVW");
+            tasklist.add("ABCDEF");
+            tasklist.add("GHIJKLMNOP");
+            tasklist.add("QRSTUVW");
+            tasklist.add("ABCDEF");
+            tasklist.add("GHIJKLMNOP");
+            tasklist.add("QRSTUVW");
+            tasklist.add("ABCDEF");
+            tasklist.add("GHIJKLMNOP");
+            tasklist.add("QRSTUVW");
+            tasklist.add("ABCDEF");
+            tasklist.add("GHIJKLMNOP");
+            tasklist.add("QRSTUVW");
             mainViewModel.addTasksList("My 3rd Task", tasklist);
 
             //callFragment();
