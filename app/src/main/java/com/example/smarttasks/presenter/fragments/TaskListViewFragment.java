@@ -8,12 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,7 +33,7 @@ import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TaskListViewFragment extends Fragment {
+public class TaskListViewFragment extends Fragment implements AddNewTaskFragment.OnAddNewTaskFragmentInteractionListener {
 
     //Constants
     private final String TAG = getClass().toString();
@@ -45,6 +48,7 @@ public class TaskListViewFragment extends Fragment {
     private TextView finishedTaskCountView;
     private Button addTaskView;
     private Button saveTaskView;
+    private Fragment fragment = new AddNewTaskFragment();
 
     //RecyclerView classes
     private RecyclerView activeRecyclerView;
@@ -66,6 +70,11 @@ public class TaskListViewFragment extends Fragment {
 
     public TaskListViewFragment() {
         //Required empty constructor
+    }
+
+    @Override
+    public void onAddNewTaskFragmentInteraction(Boolean fragmentClosed) {
+
     }
 
     public interface OnFragmentInteractionListener {
@@ -93,9 +102,9 @@ public class TaskListViewFragment extends Fragment {
         finishedTasksList.clear();
         taskList.clear();
 
-
         tasksPoJo = TasksPoJo.getInstance();
         taskListIds = tasksPoJo.getTasksIds();
+        taskList = tasksPoJo.getTasks();
 
         // Initialize Views
         taskListNameView = view.findViewById(R.id.task_list_name);
@@ -109,8 +118,6 @@ public class TaskListViewFragment extends Fragment {
         // Calculate active and finished tasks counts
         activeTaskCountView = view.findViewById(R.id.active_tasks);
         finishedTaskCountView = view.findViewById(R.id.finished_tasks);
-
-        taskList = tasksPoJo.getTasks();
 
         if(taskList != null && !taskList.isEmpty()) {
             for(int i=0; i<taskList.size(); i++) {
@@ -165,6 +172,7 @@ public class TaskListViewFragment extends Fragment {
             activeTasksList.set(((Integer) hashMap.get("position")), (String) hashMap.get("taskText"));
         });
 
+        addButtonClick();
         saveButtonClick();
 
         return view;
@@ -198,7 +206,7 @@ public class TaskListViewFragment extends Fragment {
 
     private void addButtonClick() {
         addTaskView.setOnClickListener(v -> {
-            //TODO call another fragment to add task in EditView
+            callFragment();
         });
     }
 
@@ -210,6 +218,14 @@ public class TaskListViewFragment extends Fragment {
                 mainViewModel.updateTasks(tasksPoJo.getTaskListName(), rowId, newTask, CHANGE_TO_ACTIVE);
             }
         });
+    }
+
+    private void callFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.open_list_frame, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override

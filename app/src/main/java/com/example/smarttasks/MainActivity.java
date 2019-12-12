@@ -16,6 +16,7 @@ import android.widget.GridView;
 import android.widget.RelativeLayout;
 
 import com.example.smarttasks.presenter.ViewModelFactory;
+import com.example.smarttasks.presenter.fragments.AddNewTaskFragment;
 import com.example.smarttasks.presenter.fragments.TaskListViewFragment;
 import com.example.smarttasks.presenter.gridview.MainGridViewAdapter;
 import com.example.smarttasks.presenter.recyclerview.SingleTask;
@@ -24,7 +25,7 @@ import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements TaskListViewFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements TaskListViewFragment.OnFragmentInteractionListener, AddNewTaskFragment.OnAddNewTaskFragmentInteractionListener {
 
     //Constants
     private final String TAG = getClass().toString();
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
         fragmentTransaction.commit();
     }
 
-    //Fragment response
+    //Open Task List Fragment response
     @Override
     public void onFragmentInteraction(Boolean fragmentClosed) {
         if(fragmentClosed) {
@@ -193,6 +194,12 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
             }
             addButton.setVisibility(View.VISIBLE);
         }
+    }
+
+    //Add New Task Fragment Response
+    @Override
+    public void onAddNewTaskFragmentInteraction(Boolean fragmentClosed) {
+
     }
 
 
