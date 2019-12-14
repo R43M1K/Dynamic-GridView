@@ -25,6 +25,7 @@
             android:hint="Task list name here"
             android:textStyle="italic"
             android:maxLines="1"
+            android:maxLength="20"
             android:textSize="10pt"/>
 
         <TextView

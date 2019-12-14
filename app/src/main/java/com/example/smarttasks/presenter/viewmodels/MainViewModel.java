@@ -66,6 +66,10 @@ public class MainViewModel extends ViewModel implements Parcelable {
         tasksOperationsUseCase.updateTasks(taskListName, rowId, taskName, taskFinished);
     }
 
+    public void changeTaskListRealName(String taskListTableName, String taskListRealName) {
+        tasksOperationsUseCase.changeTaskListRealName(taskListTableName, taskListRealName);
+    }
+
     public void getAllTasks(String tasksListTableName) {
 
         /*

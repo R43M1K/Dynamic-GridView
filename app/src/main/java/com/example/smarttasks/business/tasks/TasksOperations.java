@@ -45,6 +45,11 @@ public class TasksOperations implements TasksOperationsUseCase {
     }
 
     @Override
+    public void changeTaskListRealName(String taskListTableName, String taskListRealName) {
+        provideTasksOperationsInter.changeTaskListRealName(taskListTableName, taskListRealName);
+    }
+
+    @Override
     public ArrayList<HashMap> getAllTasks(String taskListTableName) {
         return provideTasksOperationsInter.getAllTasks(taskListTableName);
     }

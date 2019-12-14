@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     private MainGridViewAdapter mainGridViewAdapter;
     private LifecycleOwner lifecycleOwner;
     private Fragment fragment = new TaskListViewFragment();
+    private Fragment addTaskFragment = new AddNewTaskFragment();
 
     //UI
     GridView gridView;
@@ -81,33 +82,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
 
 
         addButton.setOnClickListener(v -> {
-            tasksPoJo.clear();
-
-            ArrayList<String> tasklist = new ArrayList<>();
-            tasklist.add("ABCDEF");
-            tasklist.add("GHIJKLMNOP");
-            tasklist.add("QRSTUVW");
-            tasklist.add("ABCDEF");
-            tasklist.add("GHIJKLMNOP");
-            tasklist.add("QRSTUVW");
-            tasklist.add("ABCDEF");
-            tasklist.add("GHIJKLMNOP");
-            tasklist.add("QRSTUVW");
-            tasklist.add("ABCDEF");
-            tasklist.add("GHIJKLMNOP");
-            tasklist.add("QRSTUVW");
-            tasklist.add("ABCDEF");
-            tasklist.add("GHIJKLMNOP");
-            tasklist.add("QRSTUVW");
-            tasklist.add("ABCDEF");
-            tasklist.add("GHIJKLMNOP");
-            tasklist.add("QRSTUVW");
-            tasklist.add("ABCDEF");
-            tasklist.add("GHIJKLMNOP");
-            tasklist.add("QRSTUVW");
-            mainViewModel.addTasksList("My 3rd Task", tasklist);
-
-            //callFragment();
+            addButtonPressed();
         });
 
         gridView.setOnItemLongClickListener((parent, view, position, id) -> {
@@ -145,6 +120,11 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
         });
 
         removeButtonPressed();
+    }
+
+    private void addButtonPressed() {
+        tasksPoJo.clear();
+        callFragment();
     }
 
     private void removeButtonPressed() {
@@ -189,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.remove(fragment);
                 fragmentTransaction.commit();
+                fragmentManager.popBackStack();
                 pos = 0;
                 mainViewModel.getAllTableNames();
             }
@@ -199,7 +180,16 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     //Add New Task Fragment Response
     @Override
     public void onAddNewTaskFragmentInteraction(Boolean fragmentClosed) {
-
+        if(!addTaskFragment.isDetached()) {
+            if(fragmentClosed) {
+                //Remove fragment and get all table tasks again
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.remove(addTaskFragment);
+                fragmentTransaction.commit();
+                mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
+            }
+        }
     }
 
 

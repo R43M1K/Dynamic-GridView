@@ -2,6 +2,8 @@ package com.example.smarttasks.presenter.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,12 +30,14 @@ import com.example.smarttasks.presenter.recyclerview.FinishedTasksRecyclerAdapte
 import com.example.smarttasks.presenter.recyclerview.SingleTask;
 import com.example.smarttasks.presenter.recyclerview.OnClickInter;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
+import com.example.smarttasks.repository.services.preferences.PreferencesService;
+import com.example.smarttasks.repository.services.preferences.PreferencesServiceInter;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TaskListViewFragment extends Fragment implements AddNewTaskFragment.OnAddNewTaskFragmentInteractionListener {
+public class TaskListViewFragment extends Fragment {
 
     //Constants
     private final String TAG = getClass().toString();
@@ -64,17 +68,14 @@ public class TaskListViewFragment extends Fragment implements AddNewTaskFragment
     private ArrayList<Integer> taskListIds = new ArrayList<>();
     private ArrayList<String> activeTasksList = new ArrayList<>();
     private ArrayList<String> finishedTasksList = new ArrayList<>();
+    private boolean newTask;
 
+    private PreferencesServiceInter preferences;
     private TasksPoJo tasksPoJo;
     private MainViewModel mainViewModel;
 
     public TaskListViewFragment() {
         //Required empty constructor
-    }
-
-    @Override
-    public void onAddNewTaskFragmentInteraction(Boolean fragmentClosed) {
-
     }
 
     public interface OnFragmentInteractionListener {
@@ -85,6 +86,8 @@ public class TaskListViewFragment extends Fragment implements AddNewTaskFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         tasksPoJo = TasksPoJo.getInstance();
+        preferences = PreferencesService.getInstance(getActivity().getBaseContext()); //Try to use getContext
+        newTask = false;
         try{
             mainViewModel = getArguments().getParcelable("mainViewModel");
         }catch (Exception e) {
@@ -98,18 +101,15 @@ public class TaskListViewFragment extends Fragment implements AddNewTaskFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_open_task_list, container, false);
 
-        activeTasksList.clear();
-        finishedTasksList.clear();
-        taskList.clear();
-
-        tasksPoJo = TasksPoJo.getInstance();
-        taskListIds = tasksPoJo.getTasksIds();
-        taskList = tasksPoJo.getTasks();
+        init();
 
         // Initialize Views
         taskListNameView = view.findViewById(R.id.task_list_name);
         if(tasksPoJo.getTaskListRealName() != null && !tasksPoJo.getTaskListRealName().isEmpty()) {
             taskListNameView.setText(tasksPoJo.getTaskListRealName());
+        }else{
+            newTask = true;
+            mainViewModel.addTasksList(taskListNameView.getText().toString(), new ArrayList<>());
         }
 
         addTaskView = view.findViewById(R.id.add_button_fragment);
@@ -119,17 +119,7 @@ public class TaskListViewFragment extends Fragment implements AddNewTaskFragment
         activeTaskCountView = view.findViewById(R.id.active_tasks);
         finishedTaskCountView = view.findViewById(R.id.finished_tasks);
 
-        if(taskList != null && !taskList.isEmpty()) {
-            for(int i=0; i<taskList.size(); i++) {
-                if(taskList.get(i).getTaskState().equals("Active")) {
-                    activeTasksList.add(taskList.get(i).getTask());
-                }else if(taskList.get(i).getTaskState().equals("Finished")) {
-                    finishedTasksList.add(taskList.get(i).getTask());
-                }else{
-                    throw new IllegalStateException("Task State is neither 'Active' or 'Finished'");
-                }
-            }
-        }
+
 
         String activeCountText = activeTasksList.size()  + ACTIVE_TASKS_TEXT;
         String finishedCountText = finishedTasksList.size() + FINISHED_TASKS_TEXT;
@@ -168,8 +158,30 @@ public class TaskListViewFragment extends Fragment implements AddNewTaskFragment
 
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(activeRecyclerView);
+        //Get edited task from active recyclerView
         activeAdapter.getCurrentTask().observe(this, hashMap -> {
             activeTasksList.set(((Integer) hashMap.get("position")), (String) hashMap.get("taskText"));
+        });
+
+        taskListNameView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                tasksPoJo.setTaskListRealName(s.toString());
+                if(newTask) {
+                    tasksPoJo.setTaskListName(preferences.get("currentTableName", ""));
+                }
+                mainViewModel.changeTaskListRealName(tasksPoJo.getTaskListName(), s.toString());
+            }
         });
 
         addButtonClick();
@@ -178,7 +190,29 @@ public class TaskListViewFragment extends Fragment implements AddNewTaskFragment
         return view;
     }
 
+    private void init() {
+        activeTasksList.clear();
+        finishedTasksList.clear();
+        taskList.clear();
+
+        taskListIds = tasksPoJo.getTasksIds();
+        taskList = tasksPoJo.getTasks();
+
+        if(taskList != null && !taskList.isEmpty()) {
+            for(int i=0; i<taskList.size(); i++) {
+                if(taskList.get(i).getTaskState().equals("Active")) {
+                    activeTasksList.add(taskList.get(i).getTask());
+                }else if(taskList.get(i).getTaskState().equals("Finished")) {
+                    finishedTasksList.add(taskList.get(i).getTask());
+                }else{
+                    throw new IllegalStateException("Task State is neither 'Active' or 'Finished'");
+                }
+            }
+        }
+    }
+
     private void deleteTask(int position) {
+        //TODO change below code for case that new task list is added.
         String currentTask = activeTasksList.get(position);
         activeTasksList.remove(position);
         String taskListName = tasksPoJo.getTaskListName();
@@ -193,11 +227,7 @@ public class TaskListViewFragment extends Fragment implements AddNewTaskFragment
             String activeCountText = activeTasksList.size() + ACTIVE_TASKS_TEXT;
             activeTaskCountView.setText(activeCountText);
         }else{
-            //If last element is removed from task list , destroy fragment
-            mainViewModel.removeTasksList(taskListName);
-            Toast.makeText(getContext(), "CONGRATULATIONS YOU HAVE FINISHED ALL TASKS", Toast.LENGTH_SHORT).show();
-            //destroy fragment
-            mListener.onFragmentInteraction(true);
+            onDetach();
         }
         //Notify both recyclerViews that items have changed
         activeAdapter.notifyDataSetChanged();
@@ -212,10 +242,14 @@ public class TaskListViewFragment extends Fragment implements AddNewTaskFragment
 
     private void saveButtonClick() {
         saveTaskView.setOnClickListener(v -> {
-            for(int i=0; i<activeTasksList.size(); i++) {
-                String newTask = activeTasksList.get(i);
-                Integer rowId = taskListIds.get(i);
-                mainViewModel.updateTasks(tasksPoJo.getTaskListName(), rowId, newTask, CHANGE_TO_ACTIVE);
+            if(activeTasksList.isEmpty()) {
+                Toast.makeText(getContext(), "YOU HAVE NOT ADDED ANY TASKS YET", Toast.LENGTH_SHORT).show();
+            }else{
+                for (int i = 0; i < activeTasksList.size(); i++) {
+                    String newTask = activeTasksList.get(i);
+                    Integer rowId = taskListIds.get(i);
+                    mainViewModel.updateTasks(tasksPoJo.getTaskListName(), rowId, newTask, CHANGE_TO_ACTIVE);
+                }
             }
         });
     }
@@ -227,6 +261,7 @@ public class TaskListViewFragment extends Fragment implements AddNewTaskFragment
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -243,6 +278,9 @@ public class TaskListViewFragment extends Fragment implements AddNewTaskFragment
     @Override
     public void onDetach() {
         super.onDetach();
+        if(activeTasksList.isEmpty()) {
+            mainViewModel.removeTasksList(tasksPoJo.getTaskListName());
+        }
         mListener.onFragmentInteraction(true);
     }
 }

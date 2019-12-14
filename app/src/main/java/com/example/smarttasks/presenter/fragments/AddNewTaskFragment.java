@@ -6,17 +6,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.smarttasks.R;
+import com.example.smarttasks.presenter.recyclerview.SingleTask;
+import com.example.smarttasks.repository.services.tasks.TasksPoJo;
+
+import java.util.ArrayList;
 
 public class AddNewTaskFragment extends Fragment {
 
     //Constants
     private final String TAG = getClass().toString();
+    private final String CHANGE_TO_ACTIVE = "Active";
 
     //Vars
     private OnAddNewTaskFragmentInteractionListener mListener;
@@ -24,7 +31,9 @@ public class AddNewTaskFragment extends Fragment {
     //Views
     private Button cancelButton;
     private Button confirmButton;
+    private EditText newTaskView;
 
+    private TasksPoJo tasksPoJo;
 
     public AddNewTaskFragment() {
         //Require empty constructor
@@ -37,6 +46,7 @@ public class AddNewTaskFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        tasksPoJo = TasksPoJo.getInstance();
     }
 
     @Nullable
@@ -46,6 +56,7 @@ public class AddNewTaskFragment extends Fragment {
 
         cancelButton = view.findViewById(R.id.cancel_button);
         confirmButton = view.findViewById(R.id.confirm_button);
+        newTaskView = view.findViewById(R.id.add_new_task);
 
         cancelClicked();
         confirmClicked();
@@ -55,13 +66,22 @@ public class AddNewTaskFragment extends Fragment {
 
     public void cancelClicked() {
         cancelButton.setOnClickListener(v -> {
-            //TODO add cancel logic here
+            mListener.onAddNewTaskFragmentInteraction(true);
         });
     }
 
     public void confirmClicked() {
         confirmButton.setOnClickListener(v -> {
-            //TODO add confirm logic here
+            if(!newTaskView.getText().toString().isEmpty()) {
+                ArrayList<SingleTask> currentTableTasks;
+                currentTableTasks = tasksPoJo.getTasks();
+                SingleTask singleTask = new SingleTask(newTaskView.getText().toString(), CHANGE_TO_ACTIVE);
+                currentTableTasks.add(singleTask);
+                tasksPoJo.setTasks(currentTableTasks);
+                mListener.onAddNewTaskFragmentInteraction(true);
+            }else{
+                Toast.makeText(getContext(), "Please fill task field",Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

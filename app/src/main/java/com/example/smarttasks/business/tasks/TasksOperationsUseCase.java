@@ -17,6 +17,8 @@ public interface TasksOperationsUseCase {
 
     void updateTasks(String taskListName, int rowId, String taskName, String taskFinished);
 
+    void changeTaskListRealName(String taskListTableName, String taskListRealName);
+
     ArrayList<HashMap> getAllTasks(String taskListTableName);
 
     ArrayList<String> getAllTableNames();

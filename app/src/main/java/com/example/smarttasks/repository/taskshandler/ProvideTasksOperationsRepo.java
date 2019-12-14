@@ -120,6 +120,19 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
     }
 
     @Override
+    public void changeTaskListRealName(String taskListTableName, String taskListRealName) {
+        preferences.put("currentTableName", taskListTableName);
+        TABLE_NAME = taskListTableName;
+        ContentValues contentValues = new ContentValues();
+        if(!taskListTableName.isEmpty()) {
+            contentValues.put(DatabaseParams.DatabaseConstants.COLUMN_TABLE_REAL_NAME, taskListRealName);
+        }
+        String where = DatabaseParams.DatabaseConstants.COLUMN_TABLE_REAL_NAME + " = ?";
+        db.update(taskListTableName, contentValues, null, null);
+        Log.d(TAG, "Tasks list real name is changed");
+    }
+
+    @Override
     public ArrayList<HashMap> getAllTasks(String taskListTableName) {
         ArrayList<HashMap> taskList = new ArrayList<>();
         Cursor cursor = db.query(taskListTableName, null, null, null, null, null,
@@ -164,5 +177,6 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
         cursor.close();
         return tableNames;
     }
+
 
 }
