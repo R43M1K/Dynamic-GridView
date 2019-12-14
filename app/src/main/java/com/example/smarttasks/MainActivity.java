@@ -149,9 +149,6 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
 
     private void callFragment() {
         addButton.setVisibility(View.GONE);
-        Bundle arguments = new Bundle();
-        arguments.putParcelable("mainViewModel", mainViewModel);
-        fragment.setArguments(arguments);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragment_frame, fragment);

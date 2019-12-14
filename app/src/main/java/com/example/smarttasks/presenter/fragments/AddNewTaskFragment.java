@@ -12,12 +12,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.smarttasks.R;
+import com.example.smarttasks.presenter.ViewModelFactory;
 import com.example.smarttasks.presenter.recyclerview.SingleTask;
+import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AddNewTaskFragment extends Fragment {
 
@@ -34,6 +38,7 @@ public class AddNewTaskFragment extends Fragment {
     private EditText newTaskView;
 
     private TasksPoJo tasksPoJo;
+    private MainViewModel mainViewModel;
 
     public AddNewTaskFragment() {
         //Require empty constructor
@@ -46,6 +51,7 @@ public class AddNewTaskFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mainViewModel = ViewModelProviders.of(this, new ViewModelFactory(getContext())).get(MainViewModel.class);
         tasksPoJo = TasksPoJo.getInstance();
     }
 
@@ -64,21 +70,22 @@ public class AddNewTaskFragment extends Fragment {
         return view;
     }
 
-    public void cancelClicked() {
-        cancelButton.setOnClickListener(v -> {
-            mListener.onAddNewTaskFragmentInteraction(true);
-        });
+    private void cancelClicked() {
+        cancelButton.setOnClickListener(v -> onDetach());
     }
 
-    public void confirmClicked() {
+    private void confirmClicked() {
         confirmButton.setOnClickListener(v -> {
             if(!newTaskView.getText().toString().isEmpty()) {
-                ArrayList<SingleTask> currentTableTasks;
-                currentTableTasks = tasksPoJo.getTasks();
+                ArrayList<SingleTask> currentTableTasks = tasksPoJo.getTasks();
                 SingleTask singleTask = new SingleTask(newTaskView.getText().toString(), CHANGE_TO_ACTIVE);
                 currentTableTasks.add(singleTask);
                 tasksPoJo.setTasks(currentTableTasks);
+                HashMap<String,String> hashMap = new HashMap<>();
+                hashMap.put("taskName", newTaskView.getText().toString());
+                hashMap.put("taskFinished", CHANGE_TO_ACTIVE);
                 mListener.onAddNewTaskFragmentInteraction(true);
+                mainViewModel.setNewTask(hashMap);
             }else{
                 Toast.makeText(getContext(), "Please fill task field",Toast.LENGTH_SHORT).show();
             }

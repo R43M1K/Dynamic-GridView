@@ -20,11 +20,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarttasks.R;
+import com.example.smarttasks.presenter.ViewModelFactory;
 import com.example.smarttasks.presenter.recyclerview.ActiveTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.recyclerview.FinishedTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.recyclerview.SingleTask;
@@ -78,6 +80,7 @@ public class TaskListViewFragment extends Fragment {
         //Required empty constructor
     }
 
+
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Boolean fragmentClosed);
     }
@@ -88,11 +91,7 @@ public class TaskListViewFragment extends Fragment {
         tasksPoJo = TasksPoJo.getInstance();
         preferences = PreferencesService.getInstance(getActivity().getBaseContext()); //Try to use getContext
         newTask = false;
-        try{
-            mainViewModel = getArguments().getParcelable("mainViewModel");
-        }catch (Exception e) {
-            Log.d(TAG, "Null parcable");
-        }
+        mainViewModel = ViewModelProviders.of(this, new ViewModelFactory(getContext())).get(MainViewModel.class);
 
     }
 
@@ -186,6 +185,7 @@ public class TaskListViewFragment extends Fragment {
 
         addButtonClick();
         saveButtonClick();
+        newTaskObserver();
 
         return view;
     }
@@ -251,6 +251,14 @@ public class TaskListViewFragment extends Fragment {
                     mainViewModel.updateTasks(tasksPoJo.getTaskListName(), rowId, newTask, CHANGE_TO_ACTIVE);
                 }
             }
+        });
+    }
+
+    private void newTaskObserver() {
+        mainViewModel.getNewTask().observe(this, hashMap -> {
+            ArrayList<HashMap<String,String>> newTasks = new ArrayList<>();
+            newTasks.add(hashMap);
+            mainViewModel.addTasks(tasksPoJo.getTaskListRealName(), tasksPoJo.getTaskListName(), newTasks);
         });
     }
 

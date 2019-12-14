@@ -22,12 +22,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
-public class MainViewModel extends ViewModel implements Parcelable {
+public class MainViewModel extends ViewModel{
 
     //Vars
     private final String TAG = getClass().toString();
     private MutableLiveData<ArrayList<HashMap>> allTasksList = new MutableLiveData<>();
     private MutableLiveData<ArrayList<String>> allTableNamesList = new MutableLiveData<>();
+    private MutableLiveData<HashMap<String,String>> newTask = new MutableLiveData<>();
 
     //Business
     private TasksOperationsUseCase tasksOperationsUseCase;
@@ -68,6 +69,14 @@ public class MainViewModel extends ViewModel implements Parcelable {
 
     public void changeTaskListRealName(String taskListTableName, String taskListRealName) {
         tasksOperationsUseCase.changeTaskListRealName(taskListTableName, taskListRealName);
+    }
+
+    public void setNewTask(HashMap<String,String> newAddedTask) {
+        newTask.setValue(newAddedTask);
+    }
+
+    public MutableLiveData<HashMap<String,String>> getNewTask() {
+        return newTask;
     }
 
     public void getAllTasks(String tasksListTableName) {
@@ -112,13 +121,4 @@ public class MainViewModel extends ViewModel implements Parcelable {
         compositeDisposable.clear();
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-    }
 }
