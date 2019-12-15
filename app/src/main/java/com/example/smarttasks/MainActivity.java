@@ -177,18 +177,19 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     //Add New Task Fragment Response
     @Override
     public void onAddNewTaskFragmentInteraction(Boolean fragmentClosed) {
-        if(!addTaskFragment.isDetached()) {
-            if(fragmentClosed) {
-                //Remove fragment and get all table tasks again
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.remove(addTaskFragment);
-                fragmentTransaction.commit();
-                mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
-            }
+        if(!addTaskFragment.isDetached() && fragmentClosed) {
+            //Remove fragment and get all table tasks again
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(addTaskFragment);
+            fragmentTransaction.commit();
+            mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
         }
     }
 
+    public MainViewModel getMainViewModel() {
+        return mainViewModel;
+    }
 
     //TODO Before creating new table, check if there is an empty table in database, if it is there
     // Then just call addTasks() and insert list into table. If there is no  empty table in database

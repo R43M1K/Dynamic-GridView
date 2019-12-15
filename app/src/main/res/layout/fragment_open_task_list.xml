@@ -26,7 +26,8 @@
             android:textStyle="italic"
             android:maxLines="1"
             android:maxLength="20"
-            android:textSize="10pt"/>
+            android:textSize="10pt"
+            android:text="task_list_name_here"/>
 
         <TextView
             android:id="@+id/active_tasks"

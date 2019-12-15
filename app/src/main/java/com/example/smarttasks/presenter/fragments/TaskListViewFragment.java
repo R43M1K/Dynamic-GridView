@@ -4,33 +4,27 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smarttasks.MainActivity;
 import com.example.smarttasks.R;
-import com.example.smarttasks.presenter.ViewModelFactory;
 import com.example.smarttasks.presenter.recyclerview.ActiveTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.recyclerview.FinishedTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.recyclerview.SingleTask;
-import com.example.smarttasks.presenter.recyclerview.OnClickInter;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 import com.example.smarttasks.repository.services.preferences.PreferencesService;
 import com.example.smarttasks.repository.services.preferences.PreferencesServiceInter;
@@ -75,6 +69,7 @@ public class TaskListViewFragment extends Fragment {
     private PreferencesServiceInter preferences;
     private TasksPoJo tasksPoJo;
     private MainViewModel mainViewModel;
+    private TextWatcher textWatcher;
 
     public TaskListViewFragment() {
         //Required empty constructor
@@ -91,7 +86,7 @@ public class TaskListViewFragment extends Fragment {
         tasksPoJo = TasksPoJo.getInstance();
         preferences = PreferencesService.getInstance(getActivity().getBaseContext()); //Try to use getContext
         newTask = false;
-        mainViewModel = ViewModelProviders.of(this, new ViewModelFactory(getContext())).get(MainViewModel.class);
+        //mainViewModel = ViewModelProviders.of(this, new ViewModelFactory(getContext())).get(MainViewModel.class);
 
     }
 
@@ -102,13 +97,18 @@ public class TaskListViewFragment extends Fragment {
 
         init();
 
+
         // Initialize Views
         taskListNameView = view.findViewById(R.id.task_list_name);
+        if (textWatcher != null) taskListNameView.removeTextChangedListener(textWatcher);
+
         if(tasksPoJo.getTaskListRealName() != null && !tasksPoJo.getTaskListRealName().isEmpty()) {
             taskListNameView.setText(tasksPoJo.getTaskListRealName());
-        }else{
+        } else {
             newTask = true;
-            mainViewModel.addTasksList(taskListNameView.getText().toString(), new ArrayList<>());
+            String taskListName = taskListNameView.getText().toString();
+            tasksPoJo.setTaskListName(taskListName);
+            mainViewModel.addTasksList(taskListName, new ArrayList<>());
         }
 
         addTaskView = view.findViewById(R.id.add_button_fragment);
@@ -162,26 +162,30 @@ public class TaskListViewFragment extends Fragment {
             activeTasksList.set(((Integer) hashMap.get("position")), (String) hashMap.get("taskText"));
         });
 
-        taskListNameView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        if (textWatcher == null) {
+            textWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                tasksPoJo.setTaskListRealName(s.toString());
-                if(newTask) {
-                    tasksPoJo.setTaskListName(preferences.get("currentTableName", ""));
                 }
-                mainViewModel.changeTaskListRealName(tasksPoJo.getTaskListName(), s.toString());
-            }
-        });
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    tasksPoJo.setTaskListRealName(s.toString());
+                    if (newTask) {
+                        tasksPoJo.setTaskListName(preferences.get("currentTableName", ""));
+                    }
+                    mainViewModel.changeTaskListRealName(tasksPoJo.getTaskListName(), s.toString());
+                }
+            };
+        }
+
+        taskListNameView.addTextChangedListener(textWatcher);
 
         addButtonClick();
         saveButtonClick();
@@ -226,7 +230,7 @@ public class TaskListViewFragment extends Fragment {
             finishedTaskCountView.setText(finishedCountText);
             String activeCountText = activeTasksList.size() + ACTIVE_TASKS_TEXT;
             activeTaskCountView.setText(activeCountText);
-        }else{
+        } else {
             onDetach();
         }
         //Notify both recyclerViews that items have changed
@@ -263,17 +267,25 @@ public class TaskListViewFragment extends Fragment {
     }
 
     private void callFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.open_list_frame, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+        if (activity != null)
+            activity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.open_list_frame, fragment)
+                    .addToBackStack(null)
+                    .commit();
     }
 
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
+        if(context instanceof MainActivity) {
+            MainActivity activity = (MainActivity) context;
+            mainViewModel = activity.getMainViewModel();
+        }
 
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.smarttasks.MainActivity;
 import com.example.smarttasks.R;
 import com.example.smarttasks.presenter.ViewModelFactory;
 import com.example.smarttasks.presenter.recyclerview.SingleTask;
@@ -49,9 +50,17 @@ public class AddNewTaskFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if (context instanceof MainActivity) {
+            mainViewModel = ((MainActivity) context).getMainViewModel();
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainViewModel = ViewModelProviders.of(this, new ViewModelFactory(getContext())).get(MainViewModel.class);
         tasksPoJo = TasksPoJo.getInstance();
     }
 
@@ -84,7 +93,7 @@ public class AddNewTaskFragment extends Fragment {
                 HashMap<String,String> hashMap = new HashMap<>();
                 hashMap.put("taskName", newTaskView.getText().toString());
                 hashMap.put("taskFinished", CHANGE_TO_ACTIVE);
-                mListener.onAddNewTaskFragmentInteraction(true);
+                //mListener.onAddNewTaskFragmentInteraction(true);
                 mainViewModel.setNewTask(hashMap);
             }else{
                 Toast.makeText(getContext(), "Please fill task field",Toast.LENGTH_SHORT).show();
@@ -92,7 +101,7 @@ public class AddNewTaskFragment extends Fragment {
         });
     }
 
-    @Override
+    /*@Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
@@ -108,5 +117,5 @@ public class AddNewTaskFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener.onAddNewTaskFragmentInteraction(true);
-    }
+    }*/
 }

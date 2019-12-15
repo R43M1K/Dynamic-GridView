@@ -134,28 +134,32 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
 
     @Override
     public ArrayList<HashMap> getAllTasks(String taskListTableName) {
-        ArrayList<HashMap> taskList = new ArrayList<>();
-        Cursor cursor = db.query(taskListTableName, null, null, null, null, null,
-                DatabaseParams.DatabaseConstants.COLUMN_TIMESTAMP + " DESC");
-        if(cursor != null) {
-            if(cursor.moveToFirst()) {
-                do {
-                    String taskId = String.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants._ID)));
-                    String taskName = cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants.COLUMN_TASKS_NAMES));
-                    String taskFinished = cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants.COLUMN_TASKS_FINISHED));
-                    String taskListRealName = cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants.COLUMN_TABLE_REAL_NAME));
-                    HashMap<String, String> taskParams = new HashMap<>();
-                    taskParams.put("taskId", taskId);
-                    taskParams.put("taskName", taskName);
-                    taskParams.put("taskFinished", taskFinished);
-                    taskParams.put("taskListRealName", taskListRealName);
-                    taskList.add(taskParams);
-                } while (cursor.moveToNext());
-                Log.d(TAG, "Got all list items from table");
+        try {
+            ArrayList<HashMap> taskList = new ArrayList<>();
+            Cursor cursor = db.query(taskListTableName, null, null, null, null, null,
+                    DatabaseParams.DatabaseConstants.COLUMN_TIMESTAMP + " DESC");
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        String taskId = String.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants._ID)));
+                        String taskName = cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants.COLUMN_TASKS_NAMES));
+                        String taskFinished = cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants.COLUMN_TASKS_FINISHED));
+                        String taskListRealName = cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants.COLUMN_TABLE_REAL_NAME));
+                        HashMap<String, String> taskParams = new HashMap<>();
+                        taskParams.put("taskId", taskId);
+                        taskParams.put("taskName", taskName);
+                        taskParams.put("taskFinished", taskFinished);
+                        taskParams.put("taskListRealName", taskListRealName);
+                        taskList.add(taskParams);
+                    } while (cursor.moveToNext());
+                    Log.d(TAG, "Got all list items from table");
+                }
+                cursor.close();
             }
-            cursor.close();
+            return taskList;
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
-        return taskList;
     }
 
     @Override
