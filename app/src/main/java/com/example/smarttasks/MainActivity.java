@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
                     public void onChanged(ArrayList<String> arrayList) {
                         if(!arrayList.isEmpty() && removeLayout.getVisibility() == View.VISIBLE) {
                             mainViewModel.removeTasksList(arrayList.get(pos));
+                            pos = 0;
                             mainViewModel.getAllTableNames();
                             addButton.setVisibility(View.VISIBLE);
                             removeLayout.setVisibility(View.GONE);
@@ -149,29 +150,27 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
 
     private void callFragment() {
         addButton.setVisibility(View.GONE);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_frame, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_frame, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     //Open Task List Fragment response
     @Override
     public void onFragmentInteraction(Boolean fragmentClosed) {
-        if(fragmentClosed) {
-            if(!fragment.isDetached()) {
-                //Remove fragment and get all table tasks again
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.remove(fragment);
-                fragmentTransaction.commit();
-                fragmentManager.popBackStack();
-                pos = 0;
-                mainViewModel.getAllTableNames();
-            }
-            addButton.setVisibility(View.VISIBLE);
+        if(!fragment.isDetached() && fragmentClosed) {
+            //Remove fragment and get all table tasks again
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(fragment);
+            fragmentTransaction.commit();
+            fragmentManager.popBackStack();
+            pos = 0;
+            mainViewModel.getAllTableNames();
         }
+        addButton.setVisibility(View.VISIBLE);
     }
 
     //Add New Task Fragment Response
@@ -179,10 +178,10 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     public void onAddNewTaskFragmentInteraction(Boolean fragmentClosed) {
         if(!addTaskFragment.isDetached() && fragmentClosed) {
             //Remove fragment and get all table tasks again
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.remove(addTaskFragment);
-            fragmentTransaction.commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(addTaskFragment)
+                    .commit();
             mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
         }
     }

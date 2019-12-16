@@ -50,15 +50,6 @@ public class AddNewTaskFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        if (context instanceof MainActivity) {
-            mainViewModel = ((MainActivity) context).getMainViewModel();
-        }
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         tasksPoJo = TasksPoJo.getInstance();
@@ -93,17 +84,21 @@ public class AddNewTaskFragment extends Fragment {
                 HashMap<String,String> hashMap = new HashMap<>();
                 hashMap.put("taskName", newTaskView.getText().toString());
                 hashMap.put("taskFinished", CHANGE_TO_ACTIVE);
-                //mListener.onAddNewTaskFragmentInteraction(true);
                 mainViewModel.setNewTask(hashMap);
+                mListener.onAddNewTaskFragmentInteraction(true);
             }else{
                 Toast.makeText(getContext(), "Please fill task field",Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    /*@Override
+    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
+        if (context instanceof MainActivity) {
+            mainViewModel = ((MainActivity) context).getMainViewModel();
+        }
 
         if (context instanceof OnAddNewTaskFragmentInteractionListener) {
             mListener = (OnAddNewTaskFragmentInteractionListener) context;
@@ -117,5 +112,5 @@ public class AddNewTaskFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener.onAddNewTaskFragmentInteraction(true);
-    }*/
+    }
 }

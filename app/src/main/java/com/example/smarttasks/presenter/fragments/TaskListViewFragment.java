@@ -86,8 +86,6 @@ public class TaskListViewFragment extends Fragment {
         tasksPoJo = TasksPoJo.getInstance();
         preferences = PreferencesService.getInstance(getActivity().getBaseContext()); //Try to use getContext
         newTask = false;
-        //mainViewModel = ViewModelProviders.of(this, new ViewModelFactory(getContext())).get(MainViewModel.class);
-
     }
 
     @Nullable
@@ -106,9 +104,10 @@ public class TaskListViewFragment extends Fragment {
             taskListNameView.setText(tasksPoJo.getTaskListRealName());
         } else {
             newTask = true;
-            String taskListName = taskListNameView.getText().toString();
-            tasksPoJo.setTaskListName(taskListName);
-            mainViewModel.addTasksList(taskListName, new ArrayList<>());
+            String taskListRealName = taskListNameView.getText().toString();
+            tasksPoJo.setTaskListRealName(taskListRealName);
+            mainViewModel.addTasksList(taskListRealName, new ArrayList<>());
+            tasksPoJo.setTaskListName(preferences.get("currentTableName", ""));
         }
 
         addTaskView = view.findViewById(R.id.add_button_fragment);
@@ -154,9 +153,9 @@ public class TaskListViewFragment extends Fragment {
 
         };
 
-
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(activeRecyclerView);
+
         //Get edited task from active recyclerView
         activeAdapter.getCurrentTask().observe(this, hashMap -> {
             activeTasksList.set(((Integer) hashMap.get("position")), (String) hashMap.get("taskText"));

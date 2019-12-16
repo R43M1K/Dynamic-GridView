@@ -134,7 +134,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
 
     @Override
     public ArrayList<HashMap> getAllTasks(String taskListTableName) {
-        try {
+        //try {
             ArrayList<HashMap> taskList = new ArrayList<>();
             Cursor cursor = db.query(taskListTableName, null, null, null, null, null,
                     DatabaseParams.DatabaseConstants.COLUMN_TIMESTAMP + " DESC");
@@ -157,9 +157,9 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                 cursor.close();
             }
             return taskList;
-        } catch (Exception e) {
-            return new ArrayList<>();
-        }
+        //} catch (Exception e) {
+          //  return new ArrayList<>();
+        //}
     }
 
     @Override

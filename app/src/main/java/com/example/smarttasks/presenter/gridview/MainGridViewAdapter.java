@@ -71,32 +71,29 @@ public class MainGridViewAdapter extends BaseAdapter {
         ArrayList<Integer> tableCounter = new ArrayList<>();
         if(!tableNames.get(position).isEmpty()) {
             mainViewModel.getAllTasks(tableNames.get(position));
-            mainViewModel.get().observe(lifecycleOwner, new Observer<ArrayList<HashMap>>() {
-                @Override
-                public void onChanged(ArrayList<HashMap> hashMaps) {
-                    if (tableCounter.isEmpty() || !tableCounter.contains(position)) {
-                        tableCounter.add(position);
-                        int unfinishedTaskCount = 0;
-                        if (!hashMaps.isEmpty()) {
-                            linearLayout.removeAllViews();
-                            title.setText(hashMaps.get(0).get("taskListRealName").toString());
-                            for (int i = 0; i < hashMaps.size(); i++) {
-                                if (hashMaps.get(i).get("taskFinished").equals("Active")) {
-                                    TextView task = new TextView(context);
-                                    task.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                                            LinearLayout.LayoutParams.WRAP_CONTENT));
-                                    task.setText(hashMaps.get(i).get("taskName").toString());
-                                    unfinishedTaskCount++;
-                                    linearLayout.addView(task);
-                                }
+            mainViewModel.get().observe(lifecycleOwner, hashMaps -> {
+                if (tableCounter.isEmpty() || !tableCounter.contains(position)) {
+                    tableCounter.add(position);
+                    int unfinishedTaskCount = 0;
+                    if (!hashMaps.isEmpty()) {
+                        linearLayout.removeAllViews();
+                        title.setText(hashMaps.get(0).get("taskListRealName").toString());
+                        for (int i = 0; i < hashMaps.size(); i++) {
+                            if (hashMaps.get(i).get("taskFinished").equals("Active")) {
+                                TextView task = new TextView(context);
+                                task.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                                task.setText(hashMaps.get(i).get("taskName").toString());
+                                unfinishedTaskCount++;
+                                linearLayout.addView(task);
                             }
-                            unfinishedTasks.setText(String.valueOf(unfinishedTaskCount));
-                        } else {
-                            mainViewModel.removeTasksList(tableNames.get(position));
-                            //TODO anotiate method below.
-                            //context.deleteSharedPreferences("lastTaskListId");
-                            Log.d(TAG, "Empty table removed");
                         }
+                        unfinishedTasks.setText(String.valueOf(unfinishedTaskCount));
+                    } else {
+                        mainViewModel.removeTasksList(tableNames.get(position));
+                        //TODO anotiate method below.
+                        //context.deleteSharedPreferences("lastTaskListId");
+                        Log.d(TAG, "Empty table removed");
                     }
                 }
             });
