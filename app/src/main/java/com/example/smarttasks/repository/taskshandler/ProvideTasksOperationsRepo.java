@@ -133,6 +133,19 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
     }
 
     @Override
+    public boolean isTaskListEmpty(String taskListTableName) {
+        boolean result = false;
+        Cursor cursor = db.query(taskListTableName, null, null, null, null, null,
+                DatabaseParams.DatabaseConstants.COLUMN_TIMESTAMP + " DESC");
+        if(cursor.getCount() == 0) {
+            //This means that task list is empty
+            result = true;
+        }
+        cursor.close();
+        return result;
+    }
+
+    @Override
     public ArrayList<HashMap> getAllTasks(String taskListTableName) {
         //try {
             ArrayList<HashMap> taskList = new ArrayList<>();
@@ -171,14 +184,19 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                 while (!cursor.isAfterLast()) {
                     String tableName = cursor.getString(cursor.getColumnIndex("name"));
                     if(tableName.contains("myTasksTable") ) {
-                        tableNames.add(tableName);
+                        //Check if table is empty is not empty, and add it to array,otherwise delete table
+                        if(isTaskListEmpty(tableName)) {
+                            removeTasksList(tableName);
+                        }else{
+                            tableNames.add(tableName);
+                        }
                     }
                     cursor.moveToNext();
                 }
             }
             Log.d(TAG, "Got all table names");
+            cursor.close();
         }
-        cursor.close();
         return tableNames;
     }
 

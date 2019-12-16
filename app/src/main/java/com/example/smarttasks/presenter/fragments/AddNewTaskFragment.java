@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -111,6 +112,13 @@ public class AddNewTaskFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if(activity != null) {
+            activity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(this)
+                    .commit();
+        }
         mListener.onAddNewTaskFragmentInteraction(true);
     }
 }

@@ -19,6 +19,8 @@ public interface ProvideTasksOperationsInter {
 
     void changeTaskListRealName(String taskListTableName, String taskListRealName);
 
+    boolean isTaskListEmpty(String taskListTableName);
+
     ArrayList<HashMap> getAllTasks(String taskListTableName);
 
     ArrayList<String> getAllTableNames();

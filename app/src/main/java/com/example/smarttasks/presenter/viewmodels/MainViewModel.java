@@ -1,26 +1,15 @@
 package com.example.smarttasks.presenter.viewmodels;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 import com.example.smarttasks.business.tasks.TasksOperationsUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.concurrent.Callable;
 
 public class MainViewModel extends ViewModel{
 
@@ -70,6 +59,7 @@ public class MainViewModel extends ViewModel{
     public void changeTaskListRealName(String taskListTableName, String taskListRealName) {
         tasksOperationsUseCase.changeTaskListRealName(taskListTableName, taskListRealName);
     }
+
 
     public void setNewTask(HashMap<String,String> newAddedTask) {
         newTask.setValue(newAddedTask);

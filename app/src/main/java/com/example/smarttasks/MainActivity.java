@@ -71,13 +71,10 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
 
         tableNames = new ArrayList<>();
         mainViewModel.getAllTableNames();
-        mainViewModel.getNames().observe(this, new Observer<ArrayList<String>>() {
-            @Override
-            public void onChanged(ArrayList<String> strings) {
-                tableNames = strings;
-                mainGridViewAdapter.refresh(tableNames);
-                mainGridViewAdapter.notifyDataSetChanged();
-            }
+        mainViewModel.getNames().observe(this, strings -> {
+            tableNames = strings;
+            mainGridViewAdapter.refresh(tableNames);
+            mainGridViewAdapter.notifyDataSetChanged();
         });
 
 
@@ -176,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     //Add New Task Fragment Response
     @Override
     public void onAddNewTaskFragmentInteraction(Boolean fragmentClosed) {
+        /*
         if(!addTaskFragment.isDetached() && fragmentClosed) {
             //Remove fragment and get all table tasks again
             getSupportFragmentManager()
@@ -184,6 +182,9 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
                     .commit();
             mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
         }
+
+         */
+        mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
     }
 
     public MainViewModel getMainViewModel() {
