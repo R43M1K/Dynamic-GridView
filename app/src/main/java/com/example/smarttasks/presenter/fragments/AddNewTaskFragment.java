@@ -86,7 +86,7 @@ public class AddNewTaskFragment extends Fragment {
                 hashMap.put("taskName", newTaskView.getText().toString());
                 hashMap.put("taskFinished", CHANGE_TO_ACTIVE);
                 mainViewModel.setNewTask(hashMap);
-                mListener.onAddNewTaskFragmentInteraction(true);
+                onDetach();
             }else{
                 Toast.makeText(getContext(), "Please fill task field",Toast.LENGTH_SHORT).show();
             }

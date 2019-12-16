@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -188,7 +190,6 @@ public class TaskListViewFragment extends Fragment {
 
         addButtonClick();
         saveButtonClick();
-        newTaskObserver();
 
         return view;
     }
@@ -257,11 +258,15 @@ public class TaskListViewFragment extends Fragment {
         });
     }
 
+    //Observe a new task from addNewTask fragment
     private void newTaskObserver() {
+        //TODO remove livedata.
         mainViewModel.getNewTask().observe(this, hashMap -> {
             ArrayList<HashMap<String,String>> newTasks = new ArrayList<>();
             newTasks.add(hashMap);
             mainViewModel.addTasks(tasksPoJo.getTaskListRealName(), tasksPoJo.getTaskListName(), newTasks);
+            activeTasksList.add(hashMap.get("taskName"));
+            activeAdapter.notifyDataSetChanged();
         });
     }
 
@@ -293,6 +298,14 @@ public class TaskListViewFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        newTaskObserver();
+    }
+
+
 
     @Override
     public void onDetach() {

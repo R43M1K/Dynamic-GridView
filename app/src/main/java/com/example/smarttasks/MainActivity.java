@@ -184,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
         }
 
          */
+
         mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
     }
 

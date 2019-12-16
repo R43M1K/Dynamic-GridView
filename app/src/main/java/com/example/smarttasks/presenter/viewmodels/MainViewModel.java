@@ -69,6 +69,7 @@ public class MainViewModel extends ViewModel{
         return newTask;
     }
 
+
     public void getAllTasks(String tasksListTableName) {
 
         /*
