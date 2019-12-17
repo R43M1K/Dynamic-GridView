@@ -1,11 +1,14 @@
 package com.example.smarttasks.presenter.viewmodels;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import io.reactivex.disposables.CompositeDisposable;
 
+import com.example.smarttasks.MainActivity;
 import com.example.smarttasks.business.tasks.TasksOperationsUseCase;
 
 import java.util.ArrayList;
@@ -68,7 +71,6 @@ public class MainViewModel extends ViewModel{
     public MutableLiveData<HashMap<String,String>> getNewTask() {
         return newTask;
     }
-
 
     public void getAllTasks(String tasksListTableName) {
 

@@ -24,6 +24,7 @@ import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements TaskListViewFragment.OnFragmentInteractionListener, AddNewTaskFragment.OnAddNewTaskFragmentInteractionListener {
 
@@ -93,11 +94,11 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             Log.d(TAG, "You have clicked on " + id);
             pos = (int) id;
-            ArrayList<SingleTask> tasks = new ArrayList<>();
-            ArrayList<Integer> taskIds = new ArrayList<>();
             mainViewModel.getAllTasks(tableNames.get(pos));
             mainViewModel.get().observe(lifecycleOwner, hashMaps -> {
                 if(!tableNames.isEmpty()) {
+                    ArrayList<SingleTask> tasks = new ArrayList<>();
+                    ArrayList<Integer> taskIds = new ArrayList<>();
                     tasksPoJo.setTaskListRealName((String) hashMaps.get(0).get("taskListRealName"));
                     String currentTableName = tableNames.get(pos);
                     tasksPoJo.setTaskListName(currentTableName);
@@ -109,10 +110,10 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
                         tasks.add(currentTask);
                         taskIds.add(taskId);
                     }
+                    tasksPoJo.setTasks(tasks);
+                    tasksPoJo.setTasksIds(taskIds);
                 }
             });
-            tasksPoJo.setTasks(tasks);
-            tasksPoJo.setTasksIds(taskIds);
             callFragment();
         });
 

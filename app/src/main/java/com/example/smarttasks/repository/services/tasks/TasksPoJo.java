@@ -28,6 +28,7 @@ public class TasksPoJo {
 
     public void clear() {
         tasks.clear();
+        tasksIds.clear();
         taskListRealName = "";
         taskListName = "";
     }

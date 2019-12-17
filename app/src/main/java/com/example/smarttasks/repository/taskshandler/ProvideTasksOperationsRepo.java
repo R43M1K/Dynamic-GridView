@@ -12,6 +12,7 @@ import com.example.smarttasks.repository.database.DatabaseHelper;
 import com.example.smarttasks.repository.database.DatabaseParams;
 import com.example.smarttasks.repository.services.preferences.PreferencesService;
 import com.example.smarttasks.repository.services.preferences.PreferencesServiceInter;
+import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,10 +29,13 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
     private PreferencesServiceInter preferences;
     private String TABLE_NAME;
 
+    private TasksPoJo tasksPoJo;
+
     public ProvideTasksOperationsRepo(Context context) {
         helper = new DatabaseHelper(context);
         db = helper.getWritableDatabase();
         preferences = PreferencesService.getInstance(context);
+        tasksPoJo = TasksPoJo.getInstance();
         TABLE_NAME = preferences.get("currentTableName", "");
     }
 
@@ -73,6 +77,18 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
         }
         db.insert(taskListTableName, null, contentValues);
         Log.d(TAG, "Tasks added to table");
+        //Get added task id and write to PoJo
+        /*
+        Cursor cursor = db.query(taskListTableName, null, null, null, null, null,
+                DatabaseParams.DatabaseConstants.COLUMN_TIMESTAMP + " DESC");
+        cursor.moveToFirst();
+        int taskId = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants._ID)));
+        ArrayList<Integer> ids = tasksPoJo.getTasksIds();
+        ids.add(taskId);
+        tasksPoJo.setTasksIds(ids);
+        cursor.close();
+
+         */
     }
 
     @Override

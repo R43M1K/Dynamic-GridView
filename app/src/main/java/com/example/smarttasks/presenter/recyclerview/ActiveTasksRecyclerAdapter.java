@@ -91,10 +91,12 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    currentTask.put("position", pos);
-                    currentTask.put("taskText", s.toString());
-                    taskLive.setValue(currentTask);
-                    Log.d(TAG, "EditText was changed");
+                    if(!activeTasks.get(position).equals(s.toString())) {
+                        currentTask.put("position", pos);
+                        currentTask.put("taskText", s.toString());
+                        taskLive.setValue(currentTask);
+                        Log.d(TAG, "EditText was changed");
+                    }
                 }
             });
         }

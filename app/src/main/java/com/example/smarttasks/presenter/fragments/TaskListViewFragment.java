@@ -190,6 +190,9 @@ public class TaskListViewFragment extends Fragment {
 
         addButtonClick();
         saveButtonClick();
+        //Send empty Hashmap at first call
+        mainViewModel.setNewTask(new HashMap<>());
+        newTaskObserver();
 
         return view;
     }
@@ -260,13 +263,16 @@ public class TaskListViewFragment extends Fragment {
 
     //Observe a new task from addNewTask fragment
     private void newTaskObserver() {
-        //TODO remove livedata.
         mainViewModel.getNewTask().observe(this, hashMap -> {
-            ArrayList<HashMap<String,String>> newTasks = new ArrayList<>();
-            newTasks.add(hashMap);
-            mainViewModel.addTasks(tasksPoJo.getTaskListRealName(), tasksPoJo.getTaskListName(), newTasks);
-            activeTasksList.add(hashMap.get("taskName"));
-            activeAdapter.notifyDataSetChanged();
+            if(!hashMap.isEmpty()) {
+                ArrayList<HashMap<String, String>> newTasks = new ArrayList<>();
+                newTasks.add(hashMap);
+                mainViewModel.addTasks(tasksPoJo.getTaskListRealName(), tasksPoJo.getTaskListName(), newTasks);
+                activeTasksList.add(hashMap.get("taskName"));
+                String activeTaskCountText = activeTasksList.size() + ACTIVE_TASKS_TEXT;
+                activeTaskCountView.setText(activeTaskCountText);
+                activeAdapter.notifyDataSetChanged();
+            }
         });
     }
 
@@ -298,14 +304,6 @@ public class TaskListViewFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        newTaskObserver();
-    }
-
-
 
     @Override
     public void onDetach() {
