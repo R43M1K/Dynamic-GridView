@@ -16,12 +16,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarttasks.MainActivity;
 import com.example.smarttasks.R;
+import com.example.smarttasks.presenter.FragmentNavigationController;
 import com.example.smarttasks.presenter.adapter.recycler.ActiveTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.adapter.recycler.FinishedTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
@@ -189,7 +191,7 @@ public class TaskListViewFragment extends Fragment {
 
         addButtonClick();
         saveButtonClick();
-        //Send empty Hashmap at first call
+        //Reset liveData
         mainViewModel.clearTasks();
         newTaskObserver();
 
@@ -242,7 +244,11 @@ public class TaskListViewFragment extends Fragment {
 
     private void addButtonClick() {
         addTaskView.setOnClickListener(v -> {
-            callFragment();
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            if (activity != null) {
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                FragmentNavigationController.addFragment(R.id.open_list_frame, fragment, BACK_STACK_FRAG, fragmentManager);
+            }
         });
     }
 
@@ -274,18 +280,6 @@ public class TaskListViewFragment extends Fragment {
             }
         });
     }
-
-    private void callFragment() {
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-
-        if (activity != null)
-            activity.getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.open_list_frame, fragment)
-                    .addToBackStack(BACK_STACK_FRAG)
-                    .commit();
-    }
-
 
     @Override
     public void onAttach(@NonNull Context context) {

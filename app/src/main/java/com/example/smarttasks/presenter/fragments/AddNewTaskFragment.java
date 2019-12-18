@@ -66,7 +66,6 @@ public class AddNewTaskFragment extends Fragment {
         confirmButton = view.findViewById(R.id.confirm_button);
         newTaskView = view.findViewById(R.id.add_new_task);
 
-
         cancelClicked();
         confirmClicked();
 
@@ -96,6 +95,14 @@ public class AddNewTaskFragment extends Fragment {
         });
     }
 
+    private void removeMe() {
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            FragmentNavigationController.removeFragmentPopBackStackByTag(this, fragmentManager, BACK_STACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -118,13 +125,5 @@ public class AddNewTaskFragment extends Fragment {
 
         newTaskView.getText().clear();
         mListener.onAddNewTaskFragmentInteraction(true);
-    }
-
-    private void removeMe() {
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        if (activity != null) {
-            FragmentManager fragmentManager = activity.getSupportFragmentManager();
-            FragmentNavigationController.removeFragmentPopBackStack(this, fragmentManager, BACK_STACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
     }
 }

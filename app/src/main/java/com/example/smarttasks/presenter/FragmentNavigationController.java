@@ -10,10 +10,21 @@ public final class FragmentNavigationController {
         fragmentManager.beginTransaction().remove(fragment).commit();
     }
 
-    public static void removeFragmentPopBackStack(Fragment fragment, FragmentManager fragmentManager, String name, int flags) {
+    public static void removeFragmentPopBackStackByTag(Fragment fragment, FragmentManager fragmentManager, String name, int flags) {
         fragmentManager.beginTransaction().remove(fragment).commit();
         fragmentManager.popBackStack(name, flags);
     }
+    
+    public static void removeFragmentPopBackStack(Fragment fragment, FragmentManager fragmentManager) {
+        fragmentManager.beginTransaction().remove(fragment).commit();
+        fragmentManager.popBackStack();
+    }
 
-    //TODO add fragments manipulation methods
+    public static void replaceFragment(int container, Fragment fragment, FragmentManager fragmentManager) {
+        fragmentManager.beginTransaction().replace(container, fragment).commit();
+    }
+
+    public static void addFragment(int container, Fragment fragment, String name, FragmentManager fragmentManager) {
+        fragmentManager.beginTransaction().add(container, fragment).addToBackStack(name).commit();
+    }
 }

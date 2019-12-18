@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 
+import com.example.smarttasks.presenter.FragmentNavigationController;
 import com.example.smarttasks.presenter.ViewModelFactory;
 import com.example.smarttasks.presenter.fragments.AddNewTaskFragment;
 import com.example.smarttasks.presenter.fragments.TaskListViewFragment;
@@ -140,44 +141,23 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
 
     private void callFragment() {
         addButton.setVisibility(View.GONE);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_frame, fragment)
-                .addToBackStack(null)
-                .commit();
+        FragmentNavigationController.replaceFragment(R.id.fragment_frame, fragment, getSupportFragmentManager());
     }
 
-    //Open Task List Fragment response
+    //OpenTaskListFragment response
     @Override
     public void onFragmentInteraction(Boolean fragmentClosed) {
         if(!fragment.isDetached() && fragmentClosed) {
-            //Remove fragment and get all table tasks again
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.remove(fragment);
-            fragmentTransaction.commit();
-            fragmentManager.popBackStack();
+            FragmentNavigationController.removeFragmentPopBackStack(fragment, getSupportFragmentManager());
             pos = 0;
             mainViewModel.getAllTableNames();
         }
         addButton.setVisibility(View.VISIBLE);
     }
 
-    //Add New Task Fragment Response
+    //AddNewTaskFragment Response
     @Override
     public void onAddNewTaskFragmentInteraction(Boolean fragmentClosed) {
-        /*
-        if(!addTaskFragment.isDetached() && fragmentClosed) {
-            //Remove fragment and get all table tasks again
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .remove(addTaskFragment)
-                    .commit();
-            mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
-        }
-
-         */
-
         mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
     }
 
