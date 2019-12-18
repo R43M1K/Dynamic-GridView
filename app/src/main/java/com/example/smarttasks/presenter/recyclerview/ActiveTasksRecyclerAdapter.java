@@ -75,7 +75,8 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         if(activeTasks != null && !activeTasks.isEmpty()) {
-            holder.activeTaskId.setText(String.valueOf(position));
+            String numberOfTask = String.valueOf(position + 1);
+            holder.activeTaskId.setText(numberOfTask);
             holder.activeTask.setText(activeTasks.get(position));
             final Integer pos = position;
             holder.activeTask.addTextChangedListener(new TextWatcher() {
@@ -110,6 +111,5 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
     public int getItemCount() {
         return activeTasks.size();
     }
-
 
 }
