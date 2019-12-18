@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
         addButton.setVisibility(View.GONE);
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_frame, fragment)
+                .replace(R.id.fragment_frame, fragment)
                 .addToBackStack(null)
                 .commit();
     }

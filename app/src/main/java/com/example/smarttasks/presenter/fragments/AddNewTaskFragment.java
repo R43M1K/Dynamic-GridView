@@ -29,6 +29,7 @@ public class AddNewTaskFragment extends Fragment {
 
     //Constants
     private final String TAG = getClass().toString();
+    private final String BACK_STACK_FRAG = "backFrag";
     private final String CHANGE_TO_ACTIVE = "Active";
 
     //Vars
@@ -119,6 +120,7 @@ public class AddNewTaskFragment extends Fragment {
                     .beginTransaction()
                     .remove(this)
                     .commit();
+            activity.getSupportFragmentManager().popBackStack(BACK_STACK_FRAG, activity.getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
         }
         newTaskView.getText().clear();
         mListener.onAddNewTaskFragmentInteraction(true);

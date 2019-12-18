@@ -39,6 +39,7 @@ public class TaskListViewFragment extends Fragment {
 
     //Constants
     private final String TAG = getClass().toString();
+    private final String BACK_STACK_FRAG = "backFrag";
     private final String ACTIVE_TASKS_TEXT = " Active Tasks";
     private final String FINISHED_TASKS_TEXT = " Finished Tasks";
     private final String CHANGE_TO_ACTIVE = "Active";
@@ -283,7 +284,7 @@ public class TaskListViewFragment extends Fragment {
             activity.getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.open_list_frame, fragment)
-                    .addToBackStack(null)
+                    .addToBackStack(BACK_STACK_FRAG)
                     .commit();
     }
 

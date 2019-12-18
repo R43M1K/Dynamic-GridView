@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,7 +34,7 @@ public class FinishedTasksRecyclerAdapter extends RecyclerView.Adapter<FinishedT
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
 
         public TextView finishedTasks;
-        public TextView finishedTasksId;
+        public ImageView finishedTasksId;
 
         public TaskViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
@@ -62,7 +63,7 @@ public class FinishedTasksRecyclerAdapter extends RecyclerView.Adapter<FinishedT
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         if(finishedTasks != null && !finishedTasks.isEmpty()) {
-            holder.finishedTasksId.setText(String.valueOf(position));
+            //holder.finishedTasksId.setText(String.valueOf(position));
             holder.finishedTasks.setText(finishedTasks.get(position));
         }
     }

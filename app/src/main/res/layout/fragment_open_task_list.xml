@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
+    android:paddingTop="10dp"
     android:visibility="visible"
     android:focusable="true"
     android:clickable="true"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="#d9dcde"
     android:weightSum="100"
     android:id="@+id/open_list_frame">
 
@@ -19,23 +19,29 @@
 
         <EditText
             android:id="@+id/task_list_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginBottom="10dp"
             android:layout_gravity="center"
             android:hint="Task list name here"
-            android:textStyle="italic"
+            android:textStyle="bold"
             android:maxLines="1"
             android:maxLength="20"
-            android:textSize="10pt"
+            android:textSize="17sp"
+            android:textColor="#a2a6a2"
             android:textAlignment="center"
+            android:background="#FFFFFF"
             android:text="MY TASK LIST"/>
 
         <TextView
             android:id="@+id/active_tasks"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:paddingLeft="10dp"
             android:textSize="18sp"
             android:textColor="#1b79f5"
+            android:background="#FFFFFF"
             android:layout_gravity="center"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -46,10 +52,13 @@
 
         <TextView
             android:id="@+id/finished_tasks"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:paddingLeft="10dp"
             android:textSize="18sp"
             android:textColor="#11f574"
+            android:background="#FFFFFF"
             android:layout_gravity="center"/>
 
         <androidx.recyclerview.widget.RecyclerView

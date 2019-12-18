@@ -18,6 +18,7 @@
             android:layout_height="match_parent"
             android:stretchMode="columnWidth"
             android:columnWidth="180dp"
+            android:padding="7dp"
             android:numColumns="2"/>
 
         <Button
