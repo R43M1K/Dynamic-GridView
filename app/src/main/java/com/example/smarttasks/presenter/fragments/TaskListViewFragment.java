@@ -51,7 +51,10 @@ public class TaskListViewFragment extends Fragment {
     private TextView finishedTaskCountView;
     private Button addTaskView;
     private Button saveTaskView;
+
+    //Fragments
     private Fragment fragment = new AddNewTaskFragment();
+    private Fragment gridFragment = new GridFragment();
 
     //RecyclerView classes
     private RecyclerView activeRecyclerView;
@@ -297,6 +300,8 @@ public class TaskListViewFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
+
 
     @Override
     public void onDetach() {
