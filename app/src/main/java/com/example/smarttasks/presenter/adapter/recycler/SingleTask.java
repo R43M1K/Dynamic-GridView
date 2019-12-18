@@ -1,4 +1,4 @@
-package com.example.smarttasks.presenter.recyclerview;
+package com.example.smarttasks.presenter.adapter.recycler;
 
 import java.util.ArrayList;
 

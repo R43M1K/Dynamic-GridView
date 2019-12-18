@@ -1,6 +1,6 @@
 package com.example.smarttasks.repository.services.tasks;
 
-import com.example.smarttasks.presenter.recyclerview.SingleTask;
+import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
 
 import java.util.ArrayList;
 

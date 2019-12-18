@@ -18,13 +18,12 @@ import android.widget.RelativeLayout;
 import com.example.smarttasks.presenter.ViewModelFactory;
 import com.example.smarttasks.presenter.fragments.AddNewTaskFragment;
 import com.example.smarttasks.presenter.fragments.TaskListViewFragment;
-import com.example.smarttasks.presenter.gridview.MainGridViewAdapter;
-import com.example.smarttasks.presenter.recyclerview.SingleTask;
+import com.example.smarttasks.presenter.adapter.grid.MainGridViewAdapter;
+import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements TaskListViewFragment.OnFragmentInteractionListener, AddNewTaskFragment.OnAddNewTaskFragmentInteractionListener {
 
@@ -75,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
         mainViewModel.getNames().observe(this, strings -> {
             tableNames = strings;
             mainGridViewAdapter.refresh(tableNames);
-            mainGridViewAdapter.notifyDataSetChanged();
         });
 
 
@@ -126,23 +124,17 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     }
 
     private void removeButtonPressed() {
-        removeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainViewModel.getAllTableNames();
-                mainViewModel.getNames().observe(lifecycleOwner, new Observer<ArrayList<String>>() {
-                    @Override
-                    public void onChanged(ArrayList<String> arrayList) {
-                        if(!arrayList.isEmpty() && removeLayout.getVisibility() == View.VISIBLE) {
-                            mainViewModel.removeTasksList(arrayList.get(pos));
-                            pos = 0;
-                            mainViewModel.getAllTableNames();
-                            addButton.setVisibility(View.VISIBLE);
-                            removeLayout.setVisibility(View.GONE);
-                        }
-                    }
-                });
-            }
+        removeButton.setOnClickListener(v -> {
+            mainViewModel.getAllTableNames();
+            mainViewModel.getNames().observe(lifecycleOwner, arrayList -> {
+                if(!arrayList.isEmpty() && removeLayout.getVisibility() == View.VISIBLE) {
+                    mainViewModel.removeTasksList(arrayList.get(pos));
+                    pos = 0;
+                    mainViewModel.getAllTableNames();
+                    addButton.setVisibility(View.VISIBLE);
+                    removeLayout.setVisibility(View.GONE);
+                }
+            });
         });
     }
 

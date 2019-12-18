@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +16,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smarttasks.MainActivity;
 import com.example.smarttasks.R;
-import com.example.smarttasks.presenter.recyclerview.ActiveTasksRecyclerAdapter;
-import com.example.smarttasks.presenter.recyclerview.FinishedTasksRecyclerAdapter;
-import com.example.smarttasks.presenter.recyclerview.SingleTask;
+import com.example.smarttasks.presenter.adapter.recycler.ActiveTasksRecyclerAdapter;
+import com.example.smarttasks.presenter.adapter.recycler.FinishedTasksRecyclerAdapter;
+import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 import com.example.smarttasks.repository.services.preferences.PreferencesService;
 import com.example.smarttasks.repository.services.preferences.PreferencesServiceInter;
@@ -192,7 +190,7 @@ public class TaskListViewFragment extends Fragment {
         addButtonClick();
         saveButtonClick();
         //Send empty Hashmap at first call
-        mainViewModel.setNewTask(new HashMap<>());
+        mainViewModel.clearTasks();
         newTaskObserver();
 
         return view;

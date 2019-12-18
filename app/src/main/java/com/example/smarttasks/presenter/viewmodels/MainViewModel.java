@@ -68,6 +68,10 @@ public class MainViewModel extends ViewModel{
         newTask.setValue(newAddedTask);
     }
 
+    public void clearTasks() {
+        newTask.setValue(new HashMap<>());
+    }
+
     public MutableLiveData<HashMap<String,String>> getNewTask() {
         return newTask;
     }

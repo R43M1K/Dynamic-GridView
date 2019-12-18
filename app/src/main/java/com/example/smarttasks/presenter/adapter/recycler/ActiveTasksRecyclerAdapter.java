@@ -1,4 +1,4 @@
-package com.example.smarttasks.presenter.recyclerview;
+package com.example.smarttasks.presenter.adapter.recycler;
 
 import android.text.Editable;
 import android.text.TextWatcher;

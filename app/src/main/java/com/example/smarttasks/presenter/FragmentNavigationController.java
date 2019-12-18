@@ -1,0 +1,19 @@
+package com.example.smarttasks.presenter;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+public final class FragmentNavigationController {
+    private FragmentNavigationController() {}
+
+    public static void removeFragment(Fragment fragment, FragmentManager fragmentManager) {
+        fragmentManager.beginTransaction().remove(fragment).commit();
+    }
+
+    public static void removeFragmentPopBackStack(Fragment fragment, FragmentManager fragmentManager, String name, int flags) {
+        fragmentManager.beginTransaction().remove(fragment).commit();
+        fragmentManager.popBackStack(name, flags);
+    }
+
+    //TODO add fragments manipulation methods
+}

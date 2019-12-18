@@ -1,4 +1,4 @@
-package com.example.smarttasks.presenter.gridview;
+package com.example.smarttasks.presenter.adapter.grid;
 
 import android.content.Context;
 import android.util.Log;
@@ -10,13 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 
 import com.example.smarttasks.R;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainGridViewAdapter extends BaseAdapter {
 
@@ -105,6 +103,7 @@ public class MainGridViewAdapter extends BaseAdapter {
     public void refresh(ArrayList<String> tableNames) {
         this.tableNames.clear();
         this.tableNames = tableNames;
+        notifyDataSetChanged();
     }
 
 }

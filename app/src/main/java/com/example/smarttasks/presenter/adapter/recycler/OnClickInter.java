@@ -1,4 +1,4 @@
-package com.example.smarttasks.presenter.recyclerview;
+package com.example.smarttasks.presenter.adapter.recycler;
 
 public interface OnClickInter {
 

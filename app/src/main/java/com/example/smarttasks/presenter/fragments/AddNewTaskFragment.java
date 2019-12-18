@@ -13,12 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.smarttasks.MainActivity;
 import com.example.smarttasks.R;
-import com.example.smarttasks.presenter.ViewModelFactory;
-import com.example.smarttasks.presenter.recyclerview.SingleTask;
+import com.example.smarttasks.presenter.FragmentNavigationController;
+import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
@@ -74,7 +74,7 @@ public class AddNewTaskFragment extends Fragment {
     }
 
     private void cancelClicked() {
-        cancelButton.setOnClickListener(v -> onDetach());
+        cancelButton.setOnClickListener(v -> removeMe());
     }
 
     private void confirmClicked() {
@@ -88,8 +88,9 @@ public class AddNewTaskFragment extends Fragment {
                 hashMap.put("taskName", newTaskView.getText().toString());
                 hashMap.put("taskFinished", CHANGE_TO_ACTIVE);
                 mainViewModel.setNewTask(hashMap);
-                onDetach();
-            }else{
+
+                removeMe();
+            } else {
                 Toast.makeText(getContext(), "Please fill task field",Toast.LENGTH_SHORT).show();
             }
         });
@@ -114,15 +115,16 @@ public class AddNewTaskFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        if(activity != null) {
-            activity.getSupportFragmentManager()
-                    .beginTransaction()
-                    .remove(this)
-                    .commit();
-            activity.getSupportFragmentManager().popBackStack(BACK_STACK_FRAG, activity.getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
-        }
+
         newTaskView.getText().clear();
         mListener.onAddNewTaskFragmentInteraction(true);
+    }
+
+    private void removeMe() {
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            FragmentNavigationController.removeFragmentPopBackStack(this, fragmentManager, BACK_STACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 }
