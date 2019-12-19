@@ -2,6 +2,9 @@ package com.example.smarttasks.presenter.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,6 +107,12 @@ public class AddNewTaskFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        newTaskView.getText().clear();
+    }
+
+    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
@@ -123,7 +132,6 @@ public class AddNewTaskFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
 
-        newTaskView.getText().clear();
         mListener.onAddNewTaskFragmentInteraction(true);
     }
 }

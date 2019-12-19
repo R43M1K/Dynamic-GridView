@@ -1,12 +1,17 @@
 package com.example.smarttasks.presenter.viewmodels;
 
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 import com.example.smarttasks.MainActivity;
 import com.example.smarttasks.business.tasks.TasksOperationsUseCase;
@@ -86,7 +91,9 @@ public class MainViewModel extends ViewModel{
                             allTasksList.setValue(hashMaps);
                             Log.d(TAG, "Tasklist added to LiveData");
                           }));
-*/
+
+         */
+
         allTasksList.setValue(tasksOperationsUseCase.getAllTasks(tasksListTableName));
     }
 
@@ -104,7 +111,9 @@ public class MainViewModel extends ViewModel{
                     allTableNamesList.setValue(arrayList);
                     Log.d(TAG, "TableNameList added to LiveData");
                 }));
-*/
+
+         */
+
         allTableNamesList.setValue(tasksOperationsUseCase.getAllTableNames());
     }
 

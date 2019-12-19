@@ -75,10 +75,10 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         if(activeTasks != null && !activeTasks.isEmpty()) {
+            final Integer pos = position;
             String numberOfTask = String.valueOf(position + 1);
             holder.activeTaskId.setText(numberOfTask);
             holder.activeTask.setText(activeTasks.get(position));
-            final Integer pos = position;
             holder.activeTask.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -92,12 +92,15 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
 
                 @Override
                 public void afterTextChanged(Editable s) {
+
                     if(!activeTasks.get(position).equals(s.toString())) {
                         currentTask.put("position", pos);
                         currentTask.put("taskText", s.toString());
                         taskLive.setValue(currentTask);
                         Log.d(TAG, "EditText was changed");
                     }
+
+
                 }
             });
         }

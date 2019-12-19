@@ -239,7 +239,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressed {
             String activeCountText = activeTasksList.size() + ACTIVE_TASKS_TEXT;
             activeTaskCountView.setText(activeCountText);
         } else {
-            onDetach();
+            removeMe();
         }
         //Notify both recyclerViews that items have changed
         activeAdapter.notifyDataSetChanged();
