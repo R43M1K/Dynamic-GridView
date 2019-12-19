@@ -36,7 +36,7 @@
         android:layout_gravity="center_vertical"
         android:gravity="top|left"
         android:background="#FFFFFF"
-        android:maxLength="60"
+        android:maxLength="160"
         android:textSize="16sp"/>
 
     <Button

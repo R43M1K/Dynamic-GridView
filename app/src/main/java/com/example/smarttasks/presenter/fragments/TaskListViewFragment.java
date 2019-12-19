@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smarttasks.MainActivity;
 import com.example.smarttasks.R;
 import com.example.smarttasks.presenter.FragmentNavigationController;
+import com.example.smarttasks.presenter.OnBackPressed;
 import com.example.smarttasks.presenter.adapter.recycler.ActiveTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.adapter.recycler.FinishedTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
@@ -35,7 +36,7 @@ import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TaskListViewFragment extends Fragment {
+public class TaskListViewFragment extends Fragment implements OnBackPressed {
 
     //Constants
     private final String TAG = getClass().toString();
@@ -53,8 +54,8 @@ public class TaskListViewFragment extends Fragment {
     private Button saveTaskView;
 
     //Fragments
-    private Fragment fragment = new AddNewTaskFragment();
-    private Fragment gridFragment = new GridFragment();
+    private Fragment fragment;
+    private Fragment gridFragment;
 
     //RecyclerView classes
     private RecyclerView activeRecyclerView;
@@ -81,14 +82,14 @@ public class TaskListViewFragment extends Fragment {
         //Required empty constructor
     }
 
-
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Boolean fragmentClosed);
+        void onFragmentInteraction(Boolean fragmentClosed, Fragment currentFragment);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fragment = new AddNewTaskFragment();
         tasksPoJo = TasksPoJo.getInstance();
         preferences = PreferencesService.getInstance(getActivity().getBaseContext()); //Try to use getContext
         newTask = false;
@@ -257,6 +258,7 @@ public class TaskListViewFragment extends Fragment {
 
     private void saveButtonClick() {
         saveTaskView.setOnClickListener(v -> {
+            /*
             if(activeTasksList.isEmpty()) {
                 Toast.makeText(getContext(), "YOU HAVE NOT ADDED ANY TASKS YET", Toast.LENGTH_SHORT).show();
             }else{
@@ -266,6 +268,9 @@ public class TaskListViewFragment extends Fragment {
                     mainViewModel.updateTasks(tasksPoJo.getTaskListName(), rowId, newTask, CHANGE_TO_ACTIVE);
                 }
             }
+
+             */
+            removeMe();
         });
     }
 
@@ -276,12 +281,27 @@ public class TaskListViewFragment extends Fragment {
                 ArrayList<HashMap<String, String>> newTasks = new ArrayList<>();
                 newTasks.add(hashMap);
                 mainViewModel.addTasks(tasksPoJo.getTaskListRealName(), tasksPoJo.getTaskListName(), newTasks);
+                mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
                 activeTasksList.add(hashMap.get("taskName"));
                 String activeTaskCountText = activeTasksList.size() + ACTIVE_TASKS_TEXT;
                 activeTaskCountView.setText(activeTaskCountText);
                 activeAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void removeMe() {
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            gridFragment = new GridFragment();
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            FragmentNavigationController.replaceFragment(R.id.fragment_container, gridFragment, fragmentManager);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        removeMe();
     }
 
     @Override
@@ -301,14 +321,14 @@ public class TaskListViewFragment extends Fragment {
         }
     }
 
-
-
     @Override
     public void onDetach() {
         super.onDetach();
+
         if(activeTasksList.isEmpty()) {
             mainViewModel.removeTasksList(tasksPoJo.getTaskListName());
         }
-        mListener.onFragmentInteraction(true);
+        mListener.onFragmentInteraction(true, this);
     }
+
 }

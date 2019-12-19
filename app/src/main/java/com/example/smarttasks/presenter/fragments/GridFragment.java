@@ -104,6 +104,7 @@ public class GridFragment extends Fragment {
             pos = (int) id;
             mainViewModel.getAllTasks(tableNames.get(pos));
             mainViewModel.get().observe(lifecycleOwner, hashMaps -> {
+                /*
                 if(!tableNames.isEmpty()) {
                     ArrayList<SingleTask> tasks = new ArrayList<>();
                     ArrayList<Integer> taskIds = new ArrayList<>();
@@ -121,6 +122,8 @@ public class GridFragment extends Fragment {
                     tasksPoJo.setTasks(tasks);
                     tasksPoJo.setTasksIds(taskIds);
                 }
+
+                 */
             });
             callFragment();
         });
@@ -160,7 +163,7 @@ public class GridFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
+        //addButton.setVisibility(View.VISIBLE);
         if(context instanceof MainActivity) {
             MainActivity activity = (MainActivity) context;
             mainViewModel = activity.getMainViewModel();

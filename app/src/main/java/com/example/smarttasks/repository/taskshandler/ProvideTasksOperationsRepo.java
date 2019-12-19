@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
 import com.example.smarttasks.repository.ProvideTasksOperationsInter;
 import com.example.smarttasks.repository.database.DatabaseHelper;
 import com.example.smarttasks.repository.database.DatabaseParams;
@@ -163,10 +164,11 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
 
     @Override
     public ArrayList<HashMap> getAllTasks(String taskListTableName) {
-        //try {
             ArrayList<HashMap> taskList = new ArrayList<>();
             Cursor cursor = db.query(taskListTableName, null, null, null, null, null,
                     DatabaseParams.DatabaseConstants.COLUMN_TIMESTAMP + " DESC");
+            ArrayList<SingleTask> tasks = new ArrayList<>();
+            ArrayList<Integer> tasksIds = new ArrayList<>();
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
                     do {
@@ -180,15 +182,19 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                         taskParams.put("taskFinished", taskFinished);
                         taskParams.put("taskListRealName", taskListRealName);
                         taskList.add(taskParams);
+                        tasks.add(new SingleTask(taskName, taskFinished));
+                        tasksIds.add(Integer.valueOf(taskId));
+
+                        tasksPoJo.setTaskListName(taskListTableName);
+                        tasksPoJo.setTaskListRealName(taskListRealName);
                     } while (cursor.moveToNext());
                     Log.d(TAG, "Got all list items from table");
                 }
                 cursor.close();
+                tasksPoJo.setTasks(tasks);
+                tasksPoJo.setTasksIds(tasksIds);
             }
             return taskList;
-        //} catch (Exception e) {
-          //  return new ArrayList<>();
-        //}
     }
 
     @Override

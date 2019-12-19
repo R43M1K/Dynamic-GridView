@@ -16,6 +16,7 @@ import android.widget.GridView;
 import android.widget.RelativeLayout;
 
 import com.example.smarttasks.presenter.FragmentNavigationController;
+import com.example.smarttasks.presenter.OnBackPressed;
 import com.example.smarttasks.presenter.ViewModelFactory;
 import com.example.smarttasks.presenter.fragments.AddNewTaskFragment;
 import com.example.smarttasks.presenter.fragments.GridFragment;
@@ -53,16 +54,8 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
 
     //OpenTaskListFragment response
     @Override
-    public void onFragmentInteraction(Boolean fragmentClosed) {
-        /*
-        if(!fragment.isDetached() && fragmentClosed) {
-            FragmentNavigationController.removeFragmentPopBackStack(fragment, getSupportFragmentManager());
-            pos = 0;
-            mainViewModel.getAllTableNames();
-        }
-        addButton.setVisibility(View.VISIBLE);
+    public void onFragmentInteraction(Boolean fragmentClosed, Fragment currentFragment) {
 
-         */
     }
 
     //AddNewTaskFragment Response
@@ -73,6 +66,20 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
 
          */
     }
+
+    /*
+    @Override
+    public void onBackPressed() {
+        ArrayList<Fragment> allFragments = (ArrayList) getSupportFragmentManager().getFragments();
+        for(int i=0; i<allFragments.size(); i++) {
+            if(allFragments.get(i) != null && allFragments.get(i) instanceof TaskListViewFragment) {
+                ((TaskListViewFragment) allFragments.get(i)).onBackPressed();
+            }
+        }
+        super.onBackPressed();
+    }
+
+     */
 
     public MainViewModel getMainViewModel() {
         return mainViewModel;
