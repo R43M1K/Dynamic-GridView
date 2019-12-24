@@ -69,6 +69,8 @@ public class AddNewTaskFragment extends Fragment {
         confirmButton = view.findViewById(R.id.confirm_button);
         newTaskView = view.findViewById(R.id.add_new_task);
 
+        newTaskView.requestFocus();
+
         cancelClicked();
         confirmClicked();
 

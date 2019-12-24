@@ -107,6 +107,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressed {
         taskListNameView = view.findViewById(R.id.task_list_name);
         if (textWatcher != null) taskListNameView.removeTextChangedListener(textWatcher);
 
+
         if(tasksPoJo.getTaskListRealName() != null && !tasksPoJo.getTaskListRealName().isEmpty()) {
             taskListNameView.setText(tasksPoJo.getTaskListRealName());
         } else {
@@ -304,9 +305,11 @@ public class TaskListViewFragment extends Fragment implements OnBackPressed {
         removeMe();
     }
 
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        if(taskListNameView != null) taskListNameView.clearFocus();
 
         if(context instanceof MainActivity) {
             MainActivity activity = (MainActivity) context;

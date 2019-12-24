@@ -8,9 +8,16 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 import com.example.smarttasks.MainActivity;
@@ -41,7 +48,12 @@ public class MainViewModel extends ViewModel{
     //TODO add rxJava to this class
 
     public void addTasksList(String taskListRealName, ArrayList<String> tasksList) {
-        tasksOperationsUseCase.addTasksList(taskListRealName, tasksList);
+        Completable.defer(() -> Completable.fromAction(() -> {
+            tasksOperationsUseCase.addTasksList(taskListRealName, tasksList);
+        })).subscribeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> { Log.d(TAG, "Completed");}, throwable -> Log.e(TAG, "Error"));
+        //tasksOperationsUseCase.addTasksList(taskListRealName, tasksList);
     }
 
     public void removeTasksList(String listName) {
@@ -92,7 +104,9 @@ public class MainViewModel extends ViewModel{
                             Log.d(TAG, "Tasklist added to LiveData");
                           }));
 
+
          */
+
 
         allTasksList.setValue(tasksOperationsUseCase.getAllTasks(tasksListTableName));
     }
@@ -103,7 +117,7 @@ public class MainViewModel extends ViewModel{
 
     public void getAllTableNames() {
 
-        /*
+
         compositeDisposable.add(Single.fromCallable(() -> tasksOperationsUseCase.getAllTableNames())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -112,9 +126,9 @@ public class MainViewModel extends ViewModel{
                     Log.d(TAG, "TableNameList added to LiveData");
                 }));
 
-         */
 
-        allTableNamesList.setValue(tasksOperationsUseCase.getAllTableNames());
+
+        //allTableNamesList.setValue(tasksOperationsUseCase.getAllTableNames());
     }
 
     public LiveData<ArrayList<String>> getNames() {
