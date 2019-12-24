@@ -3,7 +3,11 @@ package com.example.smarttasks.repository;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import io.reactivex.Single;
+
 public interface ProvideTasksOperationsInter {
+
+    Single<Boolean> checkTaskListExists(String listName);
 
     void addTasksList(String taskListRealName, ArrayList<String> tasksList);
 
@@ -21,7 +25,7 @@ public interface ProvideTasksOperationsInter {
 
     boolean isTaskListEmpty(String taskListTableName);
 
-    ArrayList<HashMap> getAllTasks(String taskListTableName);
+    Single<ArrayList<HashMap>> getAllTasks(String taskListTableName);
 
     ArrayList<String> getAllTableNames();
 }

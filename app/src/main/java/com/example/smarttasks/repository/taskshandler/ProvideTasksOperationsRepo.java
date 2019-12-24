@@ -17,6 +17,9 @@ import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
 
@@ -38,6 +41,11 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
         preferences = PreferencesService.getInstance(context);
         tasksPoJo = TasksPoJo.getInstance();
         TABLE_NAME = preferences.get("currentTableName", "");
+    }
+
+    @Override
+    public Single<Boolean> checkTaskListExists(String listName) {
+        return Single.fromCallable(() -> getAllTableNames().contains(listName));
     }
 
     @Override
@@ -163,7 +171,8 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
     }
 
     @Override
-    public ArrayList<HashMap> getAllTasks(String taskListTableName) {
+    public Single<ArrayList<HashMap>> getAllTasks(String taskListTableName) {
+        return Single.fromCallable(() -> {
             ArrayList<HashMap> taskList = new ArrayList<>();
             Cursor cursor = db.query(taskListTableName, null, null, null, null, null,
                     DatabaseParams.DatabaseConstants.COLUMN_TIMESTAMP + " DESC");
@@ -195,6 +204,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                 tasksPoJo.setTasksIds(tasksIds);
             }
             return taskList;
+        });
     }
 
     @Override

@@ -3,11 +3,16 @@ package com.example.smarttasks.business.tasks;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
+
 public interface TasksOperationsUseCase {
 
-    void addTasksList(String taskListRealName, ArrayList<String> tasksList);
+    Completable addTasksList(String taskListRealName, ArrayList<String> tasksList);
 
-    void removeTasksList(String listName);
+    Completable removeTasksList(String listName);
+
+    Single<Boolean> checkTaskListExists(String listName);
 
     void addTasks(String taskListRealName, String taskListName, ArrayList<HashMap<String, String>> tasksList);
 
@@ -19,7 +24,7 @@ public interface TasksOperationsUseCase {
 
     void changeTaskListRealName(String taskListTableName, String taskListRealName);
 
-    ArrayList<HashMap> getAllTasks(String taskListTableName);
+    Single<ArrayList<HashMap>> getAllTasks(String taskListTableName);
 
     ArrayList<String> getAllTableNames();
 

@@ -4,6 +4,12 @@ import com.example.smarttasks.repository.ProvideTasksOperationsInter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Completable;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.SingleSource;
 
 public class TasksOperations implements TasksOperationsUseCase {
 
@@ -15,13 +21,24 @@ public class TasksOperations implements TasksOperationsUseCase {
 
 
     @Override
-    public void addTasksList(String tasksListRealName, ArrayList<String> tasksList) {
-        provideTasksOperationsInter.addTasksList(tasksListRealName, tasksList);
+    public Completable addTasksList(String tasksListRealName, ArrayList<String> tasksList) {
+        return Completable.fromCallable((Callable<Void>) () -> {
+            provideTasksOperationsInter.addTasksList(tasksListRealName, tasksList);
+            return null;
+        });
     }
 
     @Override
-    public void removeTasksList(String listName) {
-        provideTasksOperationsInter.removeTasksList(listName);
+    public Completable removeTasksList(String listName) {
+        return Completable.fromCallable((Callable<Void>)() -> {
+            provideTasksOperationsInter.removeTasksList(listName);
+            return null;
+        });
+    }
+
+    @Override
+    public Single<Boolean> checkTaskListExists(String listName) {
+        return provideTasksOperationsInter.checkTaskListExists(listName);
     }
 
     @Override
@@ -50,8 +67,13 @@ public class TasksOperations implements TasksOperationsUseCase {
     }
 
     @Override
-    public ArrayList<HashMap> getAllTasks(String taskListTableName) {
-        return provideTasksOperationsInter.getAllTasks(taskListTableName);
+    public Single<ArrayList<HashMap>> getAllTasks(String taskListTableName) {
+        return provideTasksOperationsInter
+                .checkTaskListExists(taskListTableName)
+                .flatMap(existst -> {
+                    if (existst) return provideTasksOperationsInter.getAllTasks(taskListTableName);
+                    else return Single.just(new ArrayList<>());
+                });
     }
 
     @Override

@@ -67,19 +67,19 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
          */
     }
 
-    /*
+
     @Override
     public void onBackPressed() {
-        ArrayList<Fragment> allFragments = (ArrayList) getSupportFragmentManager().getFragments();
+        ArrayList<Fragment> allFragments = (ArrayList<Fragment>) getSupportFragmentManager().getFragments();
+
         for(int i=0; i<allFragments.size(); i++) {
             if(allFragments.get(i) != null && allFragments.get(i) instanceof TaskListViewFragment) {
                 ((TaskListViewFragment) allFragments.get(i)).onBackPressed();
+                return;
             }
         }
         super.onBackPressed();
     }
-
-     */
 
     public MainViewModel getMainViewModel() {
         return mainViewModel;

@@ -48,16 +48,28 @@ public class MainViewModel extends ViewModel{
     //TODO add rxJava to this class
 
     public void addTasksList(String taskListRealName, ArrayList<String> tasksList) {
-        Completable.defer(() -> Completable.fromAction(() -> {
-            tasksOperationsUseCase.addTasksList(taskListRealName, tasksList);
-        })).subscribeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> { Log.d(TAG, "Completed");}, throwable -> Log.e(TAG, "Error"));
+        compositeDisposable.add(tasksOperationsUseCase
+                .addTasksList(taskListRealName, tasksList)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
+                            Log.d(TAG, "Completed");
+                            },
+                        throwable -> {
+                            Log.e(TAG, "Error");
+                        })
+        );
         //tasksOperationsUseCase.addTasksList(taskListRealName, tasksList);
     }
 
     public void removeTasksList(String listName) {
-        tasksOperationsUseCase.removeTasksList(listName);
+        compositeDisposable.add(tasksOperationsUseCase
+                .removeTasksList(listName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        );
     }
 
     public void addTasks(String taskListRealName, String taskListName, ArrayList<HashMap<String, String>> tasksList) {
@@ -107,8 +119,12 @@ public class MainViewModel extends ViewModel{
 
          */
 
-
-        allTasksList.setValue(tasksOperationsUseCase.getAllTasks(tasksListTableName));
+        compositeDisposable.add(
+                tasksOperationsUseCase.getAllTasks(tasksListTableName)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(tasks -> allTasksList.postValue(tasks), Throwable::printStackTrace)
+        );
     }
 
     public LiveData<ArrayList<HashMap>> get() {
