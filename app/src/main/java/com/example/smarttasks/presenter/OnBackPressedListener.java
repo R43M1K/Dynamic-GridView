@@ -1,6 +1,6 @@
 package com.example.smarttasks.presenter;
 
-public interface OnBackPressed {
+public interface OnBackPressedListener {
 
     public void onBackPressed();
 

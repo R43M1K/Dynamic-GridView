@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smarttasks.MainActivity;
 import com.example.smarttasks.R;
 import com.example.smarttasks.presenter.FragmentNavigationController;
-import com.example.smarttasks.presenter.OnBackPressed;
+import com.example.smarttasks.presenter.OnBackPressedListener;
 import com.example.smarttasks.presenter.adapter.recycler.ActiveTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.adapter.recycler.FinishedTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
@@ -36,7 +35,7 @@ import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TaskListViewFragment extends Fragment implements OnBackPressed {
+public class TaskListViewFragment extends Fragment implements OnBackPressedListener {
 
     //Constants
     private final String TAG = getClass().toString();
