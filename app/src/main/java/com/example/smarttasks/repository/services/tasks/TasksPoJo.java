@@ -10,6 +10,7 @@ public class TasksPoJo {
     private ArrayList<Integer> tasksIds = new ArrayList<>();
     private String taskListRealName;
     private String taskListName;
+    private ArrayList<String> taskCondition;
 
     private static TasksPoJo INSTANCE = null;
 
@@ -31,6 +32,7 @@ public class TasksPoJo {
         tasksIds.clear();
         taskListRealName = "";
         taskListName = "";
+        taskCondition.clear();
     }
 
     public ArrayList<SingleTask> getTasks() {
@@ -63,5 +65,13 @@ public class TasksPoJo {
 
     public void setTasksIds(ArrayList<Integer> tasksIds) {
         this.tasksIds = tasksIds;
+    }
+
+    public ArrayList<String> getTaskCondition() {
+        return taskCondition;
+    }
+
+    public void setTaskCondition(ArrayList<String> taskCondition) {
+        this.taskCondition = taskCondition;
     }
 }

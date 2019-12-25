@@ -69,7 +69,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
     @Override
     public void removeTasksList(String taskListTableName) {
         helper.removeTable(db, taskListTableName);
-        Log.d(TAG, "Table removed from database");
+        Log.d(TAG, taskListTableName + " Table removed from database");
     }
 
     @Override
@@ -178,6 +178,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                     DatabaseParams.DatabaseConstants.COLUMN_TIMESTAMP + " DESC");
             ArrayList<SingleTask> tasks = new ArrayList<>();
             ArrayList<Integer> tasksIds = new ArrayList<>();
+            ArrayList<String> tasksConditions = new ArrayList<>();
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
                     do {
@@ -193,6 +194,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                         taskList.add(taskParams);
                         tasks.add(new SingleTask(taskName, taskFinished));
                         tasksIds.add(Integer.valueOf(taskId));
+                        tasksConditions.add(taskFinished);
 
                         tasksPoJo.setTaskListName(taskListTableName);
                         tasksPoJo.setTaskListRealName(taskListRealName);
@@ -202,6 +204,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                 cursor.close();
                 tasksPoJo.setTasks(tasks);
                 tasksPoJo.setTasksIds(tasksIds);
+                tasksPoJo.setTaskCondition(tasksConditions);
             }
             return taskList;
         });

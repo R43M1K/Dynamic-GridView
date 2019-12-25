@@ -33,6 +33,7 @@ import com.example.smarttasks.repository.services.preferences.PreferencesService
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class TaskListViewFragment extends Fragment implements OnBackPressedListener {
@@ -230,8 +231,13 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         activeTasksList.remove(position);
         String taskListName = tasksPoJo.getTaskListName();
         if(!activeTasksList.isEmpty()) {
-            //Update task from task list to 'Finished' from database
-            taskListIds = tasksPoJo.getTasksIds();
+            //Take only Active tasks, and use their ids
+            for(int i=0; i<tasksPoJo.getTasksIds().size(); i++) {
+                if(tasksPoJo.getTaskCondition().get(i).equals("Active")) {
+                    taskListIds.add(tasksPoJo.getTasksIds().get(i));
+                }
+            }
+            Collections.reverse(taskListIds);
             mainViewModel.updateTasks(taskListName, taskListIds.get(position), currentTask, CHANGE_TO_FINISHED);
             taskListIds.remove(position);
             finishedTasksList.add(currentTask);

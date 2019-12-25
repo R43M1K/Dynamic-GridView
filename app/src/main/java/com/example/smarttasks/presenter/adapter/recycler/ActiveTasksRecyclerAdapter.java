@@ -79,6 +79,8 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
             String numberOfTask = String.valueOf(position + 1);
             holder.activeTaskId.setText(numberOfTask);
             holder.activeTask.setText(activeTasks.get(position));
+            //TODO Use different logic to catch edittext change
+            /*
             holder.activeTask.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -103,6 +105,8 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
 
                 }
             });
+
+             */
         }
     }
 
