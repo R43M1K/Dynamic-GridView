@@ -60,7 +60,6 @@ public class MainViewModel extends ViewModel{
                             Log.e(TAG, "Error");
                         })
         );
-        //tasksOperationsUseCase.addTasksList(taskListRealName, tasksList);
     }
 
     public void removeTasksList(String listName) {
@@ -73,23 +72,48 @@ public class MainViewModel extends ViewModel{
     }
 
     public void addTasks(String taskListRealName, String taskListName, ArrayList<HashMap<String, String>> tasksList) {
-        tasksOperationsUseCase.addTasks(taskListRealName, taskListName, tasksList);
+        compositeDisposable.add(tasksOperationsUseCase
+                .addTasks(taskListRealName, taskListName, tasksList)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        );
     }
 
     public void removeTasks(String taskListName, ArrayList<Integer> indexList) {
-        tasksOperationsUseCase.removeTasks(taskListName, indexList);
+        compositeDisposable.add(tasksOperationsUseCase.
+                removeTasks(taskListName, indexList)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        );
     }
 
     public void removeTask(String taskListName, Integer taskId) {
-        tasksOperationsUseCase.removeTask(taskListName, taskId);
+        compositeDisposable.add(tasksOperationsUseCase
+                .removeTask(taskListName, taskId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        );
     }
 
     public void updateTasks(String taskListName, int rowId, String taskName, String taskFinished) {
-        tasksOperationsUseCase.updateTasks(taskListName, rowId, taskName, taskFinished);
+        compositeDisposable.add(tasksOperationsUseCase.
+                updateTasks(taskListName, rowId, taskName, taskFinished)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        );
     }
 
     public void changeTaskListRealName(String taskListTableName, String taskListRealName) {
-        tasksOperationsUseCase.changeTaskListRealName(taskListTableName, taskListRealName);
+        compositeDisposable.add(tasksOperationsUseCase
+                .changeTaskListRealName(taskListTableName, taskListRealName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        );
     }
 
 
@@ -107,23 +131,11 @@ public class MainViewModel extends ViewModel{
 
     public void getAllTasks(String tasksListTableName) {
 
-        /*
-        compositeDisposable.add(Single.fromCallable(() -> tasksOperationsUseCase.getAllTasks(tasksListTableName))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe( hashMaps -> {
-                            allTasksList.setValue(hashMaps);
-                            Log.d(TAG, "Tasklist added to LiveData");
-                          }));
-
-
-         */
-
         compositeDisposable.add(
                 tasksOperationsUseCase.getAllTasks(tasksListTableName)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(tasks -> allTasksList.postValue(tasks), Throwable::printStackTrace)
+                        .subscribe(tasks -> allTasksList.setValue(tasks), Throwable::printStackTrace)
         );
     }
 
@@ -133,7 +145,6 @@ public class MainViewModel extends ViewModel{
 
     public void getAllTableNames() {
 
-
         compositeDisposable.add(Single.fromCallable(() -> tasksOperationsUseCase.getAllTableNames())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -141,8 +152,6 @@ public class MainViewModel extends ViewModel{
                     allTableNamesList.setValue(arrayList);
                     Log.d(TAG, "TableNameList added to LiveData");
                 }));
-
-
 
         //allTableNamesList.setValue(tasksOperationsUseCase.getAllTableNames());
     }

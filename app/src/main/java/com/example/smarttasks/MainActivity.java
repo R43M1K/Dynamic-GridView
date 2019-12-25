@@ -2,12 +2,14 @@ package com.example.smarttasks;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
 import com.example.smarttasks.presenter.FragmentNavigationController;
+import com.example.smarttasks.presenter.OnBackPressedListener;
 import com.example.smarttasks.presenter.ViewModelFactory;
 import com.example.smarttasks.presenter.fragments.AddNewTaskFragment;
 import com.example.smarttasks.presenter.fragments.GridFragment;
@@ -49,10 +51,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     //AddNewTaskFragment Response
     @Override
     public void onAddNewTaskFragmentInteraction(Boolean fragmentClosed) {
-        /*
-        mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
 
-         */
     }
 
 
@@ -60,14 +59,18 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     public void onBackPressed() {
         ArrayList<Fragment> allFragments = (ArrayList<Fragment>) getSupportFragmentManager().getFragments();
 
-        //TODO check if current attached fragment implements OnBackPressedListener and call onBackPressed accordingly, if not call super.onBackPressed()
-        for(int i=0; i<allFragments.size(); i++) {
-            if(allFragments.get(i) != null && allFragments.get(i) instanceof TaskListViewFragment) {
-                ((TaskListViewFragment) allFragments.get(i)).onBackPressed();
-                return;
-            }
+        int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+        int index = backStackCount - 1;
+        Fragment fragment = allFragments.get(index);
+        if (fragment != null && fragment.isAdded() && fragment instanceof OnBackPressedListener) {
+            ((OnBackPressedListener) fragment).onBackPressed();
+        }else if(backStackCount == 1 && fragment instanceof GridFragment) {
+            //if user is in GridView and presses back , go straight to android menu , not to empty activity
+            getSupportFragmentManager().popBackStack();
+            super.onBackPressed();
+        }else{
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
     public MainViewModel getMainViewModel() {

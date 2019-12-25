@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.smarttasks.MainActivity;
 import com.example.smarttasks.R;
 import com.example.smarttasks.presenter.FragmentNavigationController;
+import com.example.smarttasks.presenter.OnBackPressedListener;
 import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
@@ -28,7 +29,7 @@ import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AddNewTaskFragment extends Fragment {
+public class AddNewTaskFragment extends Fragment{
 
     //Constants
     private final String TAG = getClass().toString();

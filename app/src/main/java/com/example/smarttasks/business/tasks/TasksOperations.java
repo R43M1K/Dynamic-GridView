@@ -42,36 +42,51 @@ public class TasksOperations implements TasksOperationsUseCase {
     }
 
     @Override
-    public void addTasks(String taskListRealName, String taskListName, ArrayList<HashMap<String, String>> tasksList) {
-        provideTasksOperationsInter.addTasks(taskListRealName, taskListName, tasksList);
+    public Completable addTasks(String taskListRealName, String taskListName, ArrayList<HashMap<String, String>> tasksList) {
+        return Completable.fromCallable((Callable<Void>)() -> {
+            provideTasksOperationsInter.addTasks(taskListRealName, taskListName, tasksList);
+            return null;
+        });
     }
 
     @Override
-    public void removeTasks(String taskListName, ArrayList<Integer> indexList) {
-        provideTasksOperationsInter.removeTasks(taskListName, indexList);
+    public Completable removeTasks(String taskListName, ArrayList<Integer> indexList) {
+        return Completable.fromCallable((Callable<Void>) () -> {
+            provideTasksOperationsInter.removeTasks(taskListName, indexList);
+            return null;
+        });
     }
 
     @Override
-    public void removeTask(String taskListName, Integer taskId) {
-        provideTasksOperationsInter.removeTask(taskListName, taskId);
+    public Completable removeTask(String taskListName, Integer taskId) {
+        return Completable.fromCallable((Callable<Void>) () -> {
+            provideTasksOperationsInter.removeTask(taskListName, taskId);
+            return null;
+        });
     }
 
     @Override
-    public void updateTasks(String taskListName, int rowId, String taskName, String taskFinished) {
-        provideTasksOperationsInter.updateTasks(taskListName, rowId, taskName, taskFinished);
+    public Completable updateTasks(String taskListName, int rowId, String taskName, String taskFinished) {
+        return Completable.fromCallable((Callable<Void>) () -> {
+            provideTasksOperationsInter.updateTasks(taskListName, rowId, taskName, taskFinished);
+            return null;
+        });
     }
 
     @Override
-    public void changeTaskListRealName(String taskListTableName, String taskListRealName) {
-        provideTasksOperationsInter.changeTaskListRealName(taskListTableName, taskListRealName);
+    public Completable changeTaskListRealName(String taskListTableName, String taskListRealName) {
+        return Completable.fromCallable((Callable<Void>) () -> {
+            provideTasksOperationsInter.changeTaskListRealName(taskListTableName, taskListRealName);
+            return null;
+        });
     }
 
     @Override
     public Single<ArrayList<HashMap>> getAllTasks(String taskListTableName) {
         return provideTasksOperationsInter
                 .checkTaskListExists(taskListTableName)
-                .flatMap(existst -> {
-                    if (existst) return provideTasksOperationsInter.getAllTasks(taskListTableName);
+                .flatMap(exist -> {
+                    if (exist) return provideTasksOperationsInter.getAllTasks(taskListTableName);
                     else return Single.just(new ArrayList<>());
                 });
     }
