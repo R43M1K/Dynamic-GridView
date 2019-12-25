@@ -114,7 +114,6 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
             String taskListRealName = taskListNameView.getText().toString();
             tasksPoJo.setTaskListRealName(taskListRealName);
             mainViewModel.addTasksList(taskListRealName, new ArrayList<>());
-            tasksPoJo.setTaskListName(preferences.get("currentTableName", ""));
         }
 
         addTaskView = view.findViewById(R.id.add_button_fragment);
@@ -167,6 +166,8 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         activeAdapter.getCurrentTask().observe(this, hashMap -> {
             activeTasksList.set(((Integer) hashMap.get("position")), (String) hashMap.get("taskText"));
         });
+
+        tasksPoJo.setTaskListName(preferences.get("currentTableName", ""));
 
         if (textWatcher == null) {
             textWatcher = new TextWatcher() {
