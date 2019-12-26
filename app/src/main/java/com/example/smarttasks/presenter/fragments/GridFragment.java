@@ -138,16 +138,11 @@ public class GridFragment extends Fragment {
 
     private void removeButtonPressed() {
         removeButton.setOnClickListener(v -> {
+            mainViewModel.removeTasksList(tableNames.get(pos));
+            pos = 0;
+            addButton.setVisibility(View.VISIBLE);
+            removeLayout.setVisibility(View.GONE);
             mainViewModel.getAllTableNames();
-            mainViewModel.getNames().observe(lifecycleOwner, arrayList -> {
-                if(!arrayList.isEmpty() && removeLayout.getVisibility() == View.VISIBLE) {
-                    mainViewModel.removeTasksList(arrayList.get(pos));
-                    pos = 0;
-                    mainViewModel.getAllTableNames();
-                    addButton.setVisibility(View.VISIBLE);
-                    removeLayout.setVisibility(View.GONE);
-                }
-            });
         });
     }
 

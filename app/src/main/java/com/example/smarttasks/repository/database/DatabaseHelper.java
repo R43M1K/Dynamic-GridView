@@ -13,7 +13,7 @@ import com.example.smarttasks.repository.services.preferences.PreferencesService
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private final String TAG = getDatabaseName();
+    private final String TAG = getClass().toString();
     private static final String DATABASE_NAME = "testSmartTasks7.db";//"smartTasks.db";
     private static final int DATABASE_VERSION = 1;
     private static String TABLE_NAME;
@@ -64,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void removeTable(SQLiteDatabase db, String taskListTableName) {
         db.execSQL("DROP TABLE IF EXISTS " + taskListTableName);
-        Log.d(TAG, "Table removed from database");
+        Log.d(TAG, "Table " + taskListTableName + " removed from database");
     }
 
     private boolean isTableNameTaken(SQLiteDatabase db) {

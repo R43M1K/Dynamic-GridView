@@ -63,12 +63,26 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                 db.insert(TABLE_NAME, null, contentValues);
             }
         }
+        tasksPoJo.setTaskListName(TABLE_NAME);
         Log.d(TAG, "SingleTask list is added to table");
     }
 
     @Override
     public void removeTasksList(String taskListTableName) {
         helper.removeTable(db, taskListTableName);
+        Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+        if(cursor != null) {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    String tableName = cursor.getString(cursor.getColumnIndex("name"));
+                    if(tableName.equals(taskListTableName) ) {
+                        Log.d(TAG, "Error database " + taskListTableName + " is removed but still appeared in database");
+                    }
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+        }
         Log.d(TAG, taskListTableName + " Table removed from database");
     }
 
@@ -85,7 +99,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
             }
         }
         db.insert(taskListTableName, null, contentValues);
-        Log.d(TAG, "Tasks added to table");
+        Log.d(TAG, "New Tasks added to table");
         //Get added task id and write to PoJo
         /*
         Cursor cursor = db.query(taskListTableName, null, null, null, null, null,

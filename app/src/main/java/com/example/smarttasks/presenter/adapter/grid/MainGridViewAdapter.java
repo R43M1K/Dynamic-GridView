@@ -69,19 +69,19 @@ public class MainGridViewAdapter extends BaseAdapter {
         ArrayList<Integer> tableCounter = new ArrayList<>();
         if(!tableNames.get(position).isEmpty()) {
             mainViewModel.getAllTasks(tableNames.get(position));
-            mainViewModel.get().observe(lifecycleOwner, hashMaps -> {
+            mainViewModel.get().observe(lifecycleOwner, tasks -> {
                 if (tableCounter.isEmpty() || !tableCounter.contains(position)) {
                     tableCounter.add(position);
                     int unfinishedTaskCount = 0;
-                    if (!hashMaps.isEmpty()) {
+                    if(!tasks.isEmpty()) {
                         linearLayout.removeAllViews();
-                        title.setText(hashMaps.get(0).get("taskListRealName").toString());
-                        for (int i = 0; i < hashMaps.size(); i++) {
-                            if (hashMaps.get(i).get("taskFinished").equals("Active")) {
+                        title.setText(tasks.get(0).get("taskListRealName").toString());
+                        for (int i = 0; i < tasks.size(); i++) {
+                            if (tasks.get(i).get("taskFinished").equals("Active")) {
                                 TextView task = new TextView(context);
                                 task.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                                         LinearLayout.LayoutParams.WRAP_CONTENT));
-                                task.setText(hashMaps.get(i).get("taskName").toString());
+                                task.setText(tasks.get(i).get("taskName").toString());
                                 unfinishedTaskCount++;
                                 linearLayout.addView(task);
                             }

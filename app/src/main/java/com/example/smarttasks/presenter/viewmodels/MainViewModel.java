@@ -45,8 +45,6 @@ public class MainViewModel extends ViewModel{
         compositeDisposable = new CompositeDisposable();
     }
 
-    //TODO add rxJava to this class
-
     public void addTasksList(String taskListRealName, ArrayList<String> tasksList) {
         compositeDisposable.add(tasksOperationsUseCase
                 .addTasksList(taskListRealName, tasksList)
@@ -152,8 +150,6 @@ public class MainViewModel extends ViewModel{
                     allTableNamesList.setValue(arrayList);
                     Log.d(TAG, "TableNameList added to LiveData");
                 }));
-
-        //allTableNamesList.setValue(tasksOperationsUseCase.getAllTableNames());
     }
 
     public LiveData<ArrayList<String>> getNames() {

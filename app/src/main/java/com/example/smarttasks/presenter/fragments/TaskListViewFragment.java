@@ -68,7 +68,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     //Vars
     private OnFragmentInteractionListener mListener;
     private ArrayList<SingleTask> taskList = new ArrayList<>();
-    private ArrayList<Integer> taskListIds = new ArrayList<>();
+    private ArrayList<Integer> taskListIds;
     private ArrayList<String> activeTasksList = new ArrayList<>();
     private ArrayList<String> finishedTasksList = new ArrayList<>();
     private boolean newTask;
@@ -226,12 +226,12 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     }
 
     private void deleteTask(int position) {
-        //TODO change below code for case that new task list is added.
         String currentTask = activeTasksList.get(position);
         activeTasksList.remove(position);
         String taskListName = tasksPoJo.getTaskListName();
         if(!activeTasksList.isEmpty()) {
             //Take only Active tasks, and use their ids
+            taskListIds = new ArrayList<>();
             for(int i=0; i<tasksPoJo.getTasksIds().size(); i++) {
                 if(tasksPoJo.getTaskCondition().get(i).equals("Active")) {
                     taskListIds.add(tasksPoJo.getTasksIds().get(i));
@@ -288,11 +288,11 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
                 ArrayList<HashMap<String, String>> newTasks = new ArrayList<>();
                 newTasks.add(hashMap);
                 mainViewModel.addTasks(tasksPoJo.getTaskListRealName(), tasksPoJo.getTaskListName(), newTasks);
-                mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
                 activeTasksList.add(hashMap.get("taskName"));
                 String activeTaskCountText = activeTasksList.size() + ACTIVE_TASKS_TEXT;
                 activeTaskCountView.setText(activeTaskCountText);
                 activeAdapter.notifyDataSetChanged();
+                mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
             }
         });
     }

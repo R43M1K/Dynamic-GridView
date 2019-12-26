@@ -10,7 +10,7 @@ public class TasksPoJo {
     private ArrayList<Integer> tasksIds = new ArrayList<>();
     private String taskListRealName;
     private String taskListName;
-    private ArrayList<String> taskCondition;
+    private ArrayList<String> taskCondition = new ArrayList<>();
 
     private static TasksPoJo INSTANCE = null;
 
