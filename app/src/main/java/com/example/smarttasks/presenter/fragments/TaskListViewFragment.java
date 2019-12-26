@@ -62,8 +62,8 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     private RecyclerView finishedRecyclerView;
     private ActiveTasksRecyclerAdapter activeAdapter;
     private FinishedTasksRecyclerAdapter finishedAdapter;
-    private RecyclerView.LayoutManager activeLayoutManager;
-    private RecyclerView.LayoutManager finishedLayoutManager;
+    private LinearLayoutManager activeLayoutManager;
+    private LinearLayoutManager finishedLayoutManager;
 
     //Vars
     private OnFragmentInteractionListener mListener;
@@ -102,7 +102,6 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
 
         init();
 
-
         // Initialize Views
         taskListNameView = view.findViewById(R.id.task_list_name);
         if (textWatcher != null) taskListNameView.removeTextChangedListener(textWatcher);
@@ -123,8 +122,6 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         // Calculate active and finished tasks counts
         activeTaskCountView = view.findViewById(R.id.active_tasks);
         finishedTaskCountView = view.findViewById(R.id.finished_tasks);
-
-
 
         String activeCountText = activeTasksList.size()  + ACTIVE_TASKS_TEXT;
         String finishedCountText = finishedTasksList.size() + FINISHED_TASKS_TEXT;
@@ -223,6 +220,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
                 }
             }
         }
+        Collections.reverse(activeTasksList);
     }
 
     private void deleteTask(int position) {
@@ -230,7 +228,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         activeTasksList.remove(position);
         String taskListName = tasksPoJo.getTaskListName();
         if(!activeTasksList.isEmpty()) {
-            //Take only Active tasks, and use their ids
+            //Take only Active tasks
             taskListIds = new ArrayList<>();
             for(int i=0; i<tasksPoJo.getTasksIds().size(); i++) {
                 if(tasksPoJo.getTaskCondition().get(i).equals("Active")) {
@@ -238,8 +236,16 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
                 }
             }
             Collections.reverse(taskListIds);
+            //TODO wrong logic implemented below
+            int finishedTaskCount = tasksPoJo.getTasksIds().size() - taskListIds.size();
+            int reversedPosition = tasksPoJo.getTasksIds().size() - (finishedTaskCount + position + 1);
             mainViewModel.updateTasks(taskListName, taskListIds.get(position), currentTask, CHANGE_TO_FINISHED);
-            taskListIds.remove(position);
+            //Change last removed task condition to Finished in taskPoJo TaskCondition ArrayList
+            ArrayList<String> conditionList = tasksPoJo.getTaskCondition();
+            Collections.reverse(conditionList);
+            conditionList.set(position, CHANGE_TO_FINISHED);
+            Collections.reverse(conditionList);
+            tasksPoJo.setTaskCondition(conditionList);
             finishedTasksList.add(currentTask);
             String finishedCountText = finishedTasksList.size() + FINISHED_TASKS_TEXT;
             finishedTaskCountView.setText(finishedCountText);

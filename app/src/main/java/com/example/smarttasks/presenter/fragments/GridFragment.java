@@ -102,6 +102,7 @@ public class GridFragment extends Fragment {
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             Log.d(TAG, "You have clicked on " + id);
             pos = (int) id;
+            tasksPoJo.setTaskListName(tableNames.get(pos));
             mainViewModel.getAllTasks(tableNames.get(pos));
             mainViewModel.get().observe(lifecycleOwner, hashMaps -> {
                 /*
