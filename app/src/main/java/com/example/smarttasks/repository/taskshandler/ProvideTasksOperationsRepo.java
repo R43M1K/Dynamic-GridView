@@ -71,18 +71,6 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
     public void removeTasksList(String taskListTableName) {
         helper.removeTable(db, taskListTableName);
         Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
-        if(cursor != null) {
-            if (cursor.moveToFirst()) {
-                while (!cursor.isAfterLast()) {
-                    String tableName = cursor.getString(cursor.getColumnIndex("name"));
-                    if(tableName.equals(taskListTableName) ) {
-                        Log.d(TAG, "Error database " + taskListTableName + " is removed but still appeared in database");
-                    }
-                    cursor.moveToNext();
-                }
-            }
-            cursor.close();
-        }
         Log.d(TAG, taskListTableName + " Table removed from database");
     }
 
