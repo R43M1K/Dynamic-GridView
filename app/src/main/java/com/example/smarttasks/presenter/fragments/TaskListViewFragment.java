@@ -241,13 +241,8 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
             }
             Collections.reverse(taskListIds);
             Collections.reverse(tasks);
-            int currentPosition = -1;
-            for(int i=0; i<tasks.size(); i++) {
-                if(tasks.get(i).equals(currentTask)) {
-                    currentPosition = i;
-                    break;
-                }
-            }
+            int currentPosition = tasks.indexOf(currentTask);
+
             mainViewModel.updateTasks(taskListName, taskListIds.get(position), currentTask, CHANGE_TO_FINISHED);
             //Change last removed task condition to Finished in taskPoJo TaskCondition ArrayList
             ArrayList<String> conditionList = tasksPoJo.getTaskCondition();
