@@ -230,20 +230,29 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         if(!activeTasksList.isEmpty()) {
             //Take only Active tasks
             taskListIds = new ArrayList<>();
+            ArrayList<String> tasks = new ArrayList<>();
+            for(int i=0; i<tasksPoJo.getTasks().size(); i++) {
+                tasks.add(tasksPoJo.getTasks().get(i).getTask());
+            }
             for(int i=0; i<tasksPoJo.getTasksIds().size(); i++) {
                 if(tasksPoJo.getTaskCondition().get(i).equals("Active")) {
                     taskListIds.add(tasksPoJo.getTasksIds().get(i));
                 }
             }
             Collections.reverse(taskListIds);
-            //TODO wrong logic implemented below
-            int finishedTaskCount = tasksPoJo.getTasksIds().size() - taskListIds.size();
-            int reversedPosition = tasksPoJo.getTasksIds().size() - (finishedTaskCount + position + 1);
+            Collections.reverse(tasks);
+            int currentPosition = -1;
+            for(int i=0; i<tasks.size(); i++) {
+                if(tasks.get(i).equals(currentTask)) {
+                    currentPosition = i;
+                    break;
+                }
+            }
             mainViewModel.updateTasks(taskListName, taskListIds.get(position), currentTask, CHANGE_TO_FINISHED);
             //Change last removed task condition to Finished in taskPoJo TaskCondition ArrayList
             ArrayList<String> conditionList = tasksPoJo.getTaskCondition();
             Collections.reverse(conditionList);
-            conditionList.set(position, CHANGE_TO_FINISHED);
+            conditionList.set(currentPosition, CHANGE_TO_FINISHED);
             Collections.reverse(conditionList);
             tasksPoJo.setTaskCondition(conditionList);
             finishedTasksList.add(currentTask);
