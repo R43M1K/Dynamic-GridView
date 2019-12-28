@@ -2,6 +2,7 @@ package com.example.smarttasks.presenter.fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -82,8 +83,8 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     private ArrayList<String> activeTasksList = new ArrayList<>();
     private ArrayList<String> finishedTasksList = new ArrayList<>();
     private boolean newTask;
-    private Bitmap contentBG;
-    private boolean needBlur;
+    private boolean isKeyboardShowing = false;
+
 
     private PreferencesServiceInter preferences;
     private TasksPoJo tasksPoJo;
@@ -129,7 +130,6 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         }
 
         addTaskView = view.findViewById(R.id.add_button_fragment);
-        saveTaskView = view.findViewById(R.id.save_button_fragment);
         listLayout = view.findViewById(R.id.open_list_frame);
 
         // Calculate active and finished tasks counts
@@ -155,8 +155,6 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         finishedRecyclerView.setLayoutManager(finishedLayoutManager);
         activeRecyclerView.setAdapter(activeAdapter);
         finishedRecyclerView.setAdapter(finishedAdapter);
-
-        contentBG = BitmapOperator.drawableToBitmap(listLayout.getBackground());
 
         ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
             @Override
@@ -208,11 +206,11 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         taskListNameView.addTextChangedListener(textWatcher);
 
         addButtonClick();
-        saveButtonClick();
         //Reset liveData
         mainViewModel.clearTasks();
         newTaskListener();
         blurListener();
+        keyboardDetect(view);
 
         mainView = view;
         return view;
@@ -286,6 +284,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
             if (activity != null) {
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 FragmentNavigationController.addFragment(R.id.fragment_container, fragment, BACK_STACK_FRAG, fragmentManager);
+                addTaskView.setVisibility(View.GONE);
                 //Blur with below function
                 Blurry.with(getContext()).radius(25).sampling(2).onto(listLayout);
             }
@@ -293,27 +292,13 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     }
 
     private void blurListener() {
-        mainViewModel.getNeedBlur().observe(this, apply -> { Blurry.delete(listLayout); });
-
-    }
-
-    private void saveButtonClick() {
-        saveTaskView.setOnClickListener(v -> {
-            /*
-            if(activeTasksList.isEmpty()) {
-                Toast.makeText(getContext(), "YOU HAVE NOT ADDED ANY TASKS YET", Toast.LENGTH_SHORT).show();
-            }else{
-                for (int i = 0; i < activeTasksList.size(); i++) {
-                    String newTask = activeTasksList.get(i);
-                    Integer rowId = taskListIds.get(i);
-                    mainViewModel.updateTasks(tasksPoJo.getTaskListName(), rowId, newTask, CHANGE_TO_ACTIVE);
-                }
-            }
-
-             */
-            removeMe();
+        mainViewModel.getNeedBlur().observe(this, apply -> {
+            Blurry.delete(listLayout);
+            addTaskView.setVisibility(View.VISIBLE);
         });
+
     }
+
 
     //Observe a new task from addNewTask fragment
     private void newTaskListener() {
@@ -329,6 +314,36 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
                 mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
             }
         });
+    }
+
+    private void keyboardDetect(View contentView) {
+
+        contentView.getViewTreeObserver().addOnGlobalLayoutListener(
+                () -> {
+                    Rect r = new Rect();
+                    contentView.getWindowVisibleDisplayFrame(r);
+                    int screenHeight = contentView.getRootView().getHeight();
+
+                    // r.bottom is the position above soft keypad or device button.
+                    // if keypad is shown, the r.bottom is smaller than that before.
+                    int keypadHeight = screenHeight - r.bottom;
+
+
+                    if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                        // keyboard is opened
+                        if (!isKeyboardShowing) {
+                            isKeyboardShowing = true;
+                            addTaskView.setVisibility(View.GONE);
+                        }
+                    }
+                    else {
+                        // keyboard is closed
+                        if (isKeyboardShowing) {
+                            isKeyboardShowing = false;
+                            addTaskView.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
     }
 
     private void removeMe() {
