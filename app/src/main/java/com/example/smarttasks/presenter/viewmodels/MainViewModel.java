@@ -33,6 +33,7 @@ public class MainViewModel extends ViewModel{
     private MutableLiveData<ArrayList<HashMap>> allTasksList = new MutableLiveData<>();
     private MutableLiveData<ArrayList<String>> allTableNamesList = new MutableLiveData<>();
     private MutableLiveData<HashMap<String,String>> newTask = new MutableLiveData<>();
+    private MutableLiveData<Boolean> needBlur = new MutableLiveData<>();
 
     //Business
     private TasksOperationsUseCase tasksOperationsUseCase;
@@ -154,6 +155,14 @@ public class MainViewModel extends ViewModel{
 
     public LiveData<ArrayList<String>> getNames() {
         return allTableNamesList;
+    }
+
+    public void setNeedBlur(boolean needBlur) {
+        this.needBlur.setValue(needBlur);
+    }
+
+    public MutableLiveData<Boolean> getNeedBlur() {
+        return needBlur;
     }
 
     @Override

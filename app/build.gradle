@@ -5,11 +5,13 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.smarttasks"
-        minSdkVersion 14
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {
@@ -45,4 +47,6 @@ dependencies {
 
     //ViewModels
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+
+    implementation 'jp.wasabeef:blurry:3.0.0'
 }

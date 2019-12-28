@@ -1,14 +1,18 @@
 package com.example.smarttasks.presenter.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,6 +32,8 @@ import com.example.smarttasks.presenter.adapter.recycler.ActiveTasksRecyclerAdap
 import com.example.smarttasks.presenter.adapter.recycler.FinishedTasksRecyclerAdapter;
 import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
+import com.example.smarttasks.repository.services.operations.BitmapOperator;
+import com.example.smarttasks.repository.services.operations.BlurBuilder;
 import com.example.smarttasks.repository.services.preferences.PreferencesService;
 import com.example.smarttasks.repository.services.preferences.PreferencesServiceInter;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
@@ -52,6 +58,8 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     private TextView finishedTaskCountView;
     private Button addTaskView;
     private Button saveTaskView;
+    private LinearLayout listLayout;
+    private View mainView;
 
     //Fragments
     private Fragment fragment;
@@ -72,6 +80,8 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     private ArrayList<String> activeTasksList = new ArrayList<>();
     private ArrayList<String> finishedTasksList = new ArrayList<>();
     private boolean newTask;
+    private Bitmap contentBG;
+    private boolean needBlur;
 
     private PreferencesServiceInter preferences;
     private TasksPoJo tasksPoJo;
@@ -118,6 +128,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
 
         addTaskView = view.findViewById(R.id.add_button_fragment);
         saveTaskView = view.findViewById(R.id.save_button_fragment);
+        listLayout = view.findViewById(R.id.open_list_frame);
 
         // Calculate active and finished tasks counts
         activeTaskCountView = view.findViewById(R.id.active_tasks);
@@ -142,6 +153,8 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         finishedRecyclerView.setLayoutManager(finishedLayoutManager);
         activeRecyclerView.setAdapter(activeAdapter);
         finishedRecyclerView.setAdapter(finishedAdapter);
+
+        contentBG = BitmapOperator.drawableToBitmap(listLayout.getBackground());
 
         ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
             @Override
@@ -196,7 +209,8 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         saveButtonClick();
         //Reset liveData
         mainViewModel.clearTasks();
-        newTaskObserver();
+        newTaskListener();
+        blurListener();
 
         return view;
     }
@@ -268,9 +282,39 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
             AppCompatActivity activity = (AppCompatActivity) getActivity();
             if (activity != null) {
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                FragmentNavigationController.addFragment(R.id.open_list_frame, fragment, BACK_STACK_FRAG, fragmentManager);
+                FragmentNavigationController.addFragment(R.id.fragment_container, fragment, BACK_STACK_FRAG, fragmentManager);
+                applyBlur(true);
+                //Blurry.with(getContext()).radius(25).sampling(2).onto(listLayout);
             }
         });
+    }
+
+    private void applyBlur(boolean apply) {
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if(activity != null) {
+            View content = activity.findViewById(android.R.id.content).getRootView();
+            if (content.getWidth() > 0) {
+                Bitmap bitmap;
+                if (apply) {
+                    bitmap = BlurBuilder.blur(content);
+                } else {
+                    bitmap = contentBG;
+                }
+                listLayout.setBackground(new BitmapDrawable(activity.getResources(), bitmap));
+            } else {
+                content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Bitmap image = BlurBuilder.blur(content);
+                        listLayout.setBackground(new BitmapDrawable(activity.getResources(), image));
+                    }
+                });
+            }
+        }
+    }
+
+    private void blurListener() {
+        mainViewModel.getNeedBlur().observe(this, apply -> applyBlur(apply));
     }
 
     private void saveButtonClick() {
@@ -292,7 +336,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     }
 
     //Observe a new task from addNewTask fragment
-    private void newTaskObserver() {
+    private void newTaskListener() {
         mainViewModel.getNewTask().observe(this, hashMap -> {
             if(!hashMap.isEmpty()) {
                 ArrayList<HashMap<String, String>> newTasks = new ArrayList<>();

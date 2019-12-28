@@ -1,6 +1,8 @@
 package com.example.smarttasks.presenter.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,6 +27,8 @@ import com.example.smarttasks.presenter.FragmentNavigationController;
 import com.example.smarttasks.presenter.OnBackPressedListener;
 import com.example.smarttasks.presenter.adapter.recycler.SingleTask;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
+import com.example.smarttasks.repository.services.operations.BitmapOperator;
+import com.example.smarttasks.repository.services.operations.BlurBuilder;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 
 import java.util.ArrayList;
@@ -105,6 +110,7 @@ public class AddNewTaskFragment extends Fragment{
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if (activity != null) {
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            mainViewModel.setNeedBlur(false);
             FragmentNavigationController.removeFragmentPopBackStackByTag(this, fragmentManager, BACK_STACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
