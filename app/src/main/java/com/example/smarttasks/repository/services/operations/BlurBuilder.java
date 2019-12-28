@@ -49,6 +49,7 @@ public class BlurBuilder {
         }
 
     // Use code below if you want to blur particular element , to add/remove blur use boolean apply.
+    // CAUTION this functions require API level 19 or higher
     /*
     private void applyBlur(boolean apply) {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
