@@ -3,11 +3,15 @@ package com.example.smarttasks.repository.services.operations;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.view.View;
+import android.view.ViewTreeObserver;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class BlurBuilder {
 
@@ -43,4 +47,32 @@ public class BlurBuilder {
             v.draw(c);
             return b;
         }
+
+    // Use code below if you want to blur particular element , to add/remove blur use boolean apply.
+    /*
+    private void applyBlur(boolean apply) {
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if(activity != null) {
+            View content = activity.findViewById(android.R.id.content).getRootView();
+            if (content.getWidth() > 0) {
+                Bitmap bitmap;
+                if (apply) {
+                    bitmap = BlurBuilder.blur(mainView);
+                } else {
+                    bitmap = contentBG;
+                }
+                mainView.setBackground(new BitmapDrawable(activity.getResources(), bitmap));
+            } else {
+                content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Bitmap image = BlurBuilder.blur(mainView);
+                        mainView.setBackground(new BitmapDrawable(activity.getResources(), image));
+                    }
+                });
+            }
+        }
+    }
+
+     */
 }

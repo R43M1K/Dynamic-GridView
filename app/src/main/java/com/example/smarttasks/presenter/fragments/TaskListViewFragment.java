@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import jp.wasabeef.blurry.Blurry;
+
 public class TaskListViewFragment extends Fragment implements OnBackPressedListener {
 
     //Constants
@@ -212,6 +214,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         newTaskListener();
         blurListener();
 
+        mainView = view;
         return view;
     }
 
@@ -283,38 +286,15 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
             if (activity != null) {
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 FragmentNavigationController.addFragment(R.id.fragment_container, fragment, BACK_STACK_FRAG, fragmentManager);
-                applyBlur(true);
-                //Blurry.with(getContext()).radius(25).sampling(2).onto(listLayout);
+                //Blur with below function
+                Blurry.with(getContext()).radius(25).sampling(2).onto(listLayout);
             }
         });
     }
 
-    private void applyBlur(boolean apply) {
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        if(activity != null) {
-            View content = activity.findViewById(android.R.id.content).getRootView();
-            if (content.getWidth() > 0) {
-                Bitmap bitmap;
-                if (apply) {
-                    bitmap = BlurBuilder.blur(content);
-                } else {
-                    bitmap = contentBG;
-                }
-                listLayout.setBackground(new BitmapDrawable(activity.getResources(), bitmap));
-            } else {
-                content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        Bitmap image = BlurBuilder.blur(content);
-                        listLayout.setBackground(new BitmapDrawable(activity.getResources(), image));
-                    }
-                });
-            }
-        }
-    }
-
     private void blurListener() {
-        mainViewModel.getNeedBlur().observe(this, apply -> applyBlur(apply));
+        mainViewModel.getNeedBlur().observe(this, apply -> { Blurry.delete(listLayout); });
+
     }
 
     private void saveButtonClick() {
