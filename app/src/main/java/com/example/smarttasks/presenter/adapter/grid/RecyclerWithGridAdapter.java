@@ -21,14 +21,16 @@ public class RecyclerWithGridAdapter extends RecyclerView.Adapter<RecyclerWithGr
         private ArrayList<GridItem> taskItems;
         private Context context;
         private ItemListener itemListener;
+        private LongClickListener longClickListener;
 
-        public RecyclerWithGridAdapter(Context context, ArrayList<GridItem> taskItems, ItemListener itemListener) {
+        public RecyclerWithGridAdapter(Context context, ArrayList<GridItem> taskItems, ItemListener itemListener, LongClickListener longClickListener) {
             this.taskItems = taskItems;
+            this.longClickListener = longClickListener;
             this.context = context;
             this.itemListener = itemListener;
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
             private GridItem gridItem;
             //Views
@@ -40,6 +42,7 @@ public class RecyclerWithGridAdapter extends RecyclerView.Adapter<RecyclerWithGr
             private ViewHolder(View v) {
                 super(v);
                 v.setOnClickListener(this);
+                v.setOnLongClickListener(this);
                 taskListNameView = v.findViewById(R.id.title);
                 activeTaskCountView = v.findViewById(R.id.active_task_count_gird);
                 linearLayout = v.findViewById(R.id.tasks_layout);
@@ -61,11 +64,20 @@ public class RecyclerWithGridAdapter extends RecyclerView.Adapter<RecyclerWithGr
                 }
             }
 
+
             @Override
             public void onClick(View view) {
                 if (itemListener != null) {
                     itemListener.onItemClick(gridItem);
                 }
+            }
+
+            @Override
+            public boolean onLongClick(View v) {
+                if(longClickListener != null) {
+                    longClickListener.onItemLongClick(gridItem);
+                }
+                return true;
             }
         }
 
@@ -88,6 +100,10 @@ public class RecyclerWithGridAdapter extends RecyclerView.Adapter<RecyclerWithGr
 
         public interface ItemListener {
             void onItemClick(GridItem gridItem);
+        }
+
+        public interface LongClickListener {
+            void onItemLongClick(GridItem gridItem);
         }
 
         public void refresh(ArrayList<GridItem> arrayList) {

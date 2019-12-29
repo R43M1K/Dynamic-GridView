@@ -60,13 +60,12 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     private TextView activeTaskCountView;
     private TextView finishedTaskCountView;
     private Button addTaskView;
-    private Button saveTaskView;
     private LinearLayout listLayout;
     private View mainView;
 
     //Fragments
     private Fragment fragment;
-    private Fragment gridFragment;
+    private Fragment recyclerGridFragment;
 
     //RecyclerView classes
     private RecyclerView activeRecyclerView;
@@ -177,8 +176,6 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         activeAdapter.getCurrentTask().observe(this, hashMap -> {
             activeTasksList.set(((Integer) hashMap.get("position")), (String) hashMap.get("taskText"));
         });
-
-        tasksPoJo.setTaskListName(preferences.get("currentTableName", ""));
 
         if (textWatcher == null) {
             textWatcher = new TextWatcher() {
@@ -349,9 +346,9 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     private void removeMe() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if (activity != null) {
-            gridFragment = new GridFragment();
+            recyclerGridFragment = new RecyclerWithGridFragment();
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
-            FragmentNavigationController.replaceFragment(R.id.fragment_container, gridFragment, fragmentManager);
+            FragmentNavigationController.replaceFragment(R.id.fragment_container, recyclerGridFragment, fragmentManager);
         }
     }
 

@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
         Fragment fragment = allFragments.get(index);
         if (fragment != null && fragment.isAdded() && fragment instanceof OnBackPressedListener) {
             ((OnBackPressedListener) fragment).onBackPressed();
-        }else if(backStackCount == 1 && fragment instanceof GridFragment) {
+        }else if(backStackCount == 1 && fragment instanceof RecyclerWithGridFragment) {
             //if user is in GridView and presses back , go straight to android menu , not to empty activity
             getSupportFragmentManager().popBackStack();
             super.onBackPressed();
