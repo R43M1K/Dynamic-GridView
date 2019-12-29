@@ -13,6 +13,7 @@ import com.example.smarttasks.presenter.OnBackPressedListener;
 import com.example.smarttasks.presenter.ViewModelFactory;
 import com.example.smarttasks.presenter.fragments.AddNewTaskFragment;
 import com.example.smarttasks.presenter.fragments.GridFragment;
+import com.example.smarttasks.presenter.fragments.RecyclerWithGridFragment;
 import com.example.smarttasks.presenter.fragments.TaskListViewFragment;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
 
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     //Views
     private ViewModelFactory factory;
     private MainViewModel mainViewModel;
+    private Fragment recyclerWithGridFragment = new RecyclerWithGridFragment();
     private Fragment gridFragment = new GridFragment();
 
     @Override
@@ -37,7 +39,8 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     }
 
     private void callFragment() {
-        FragmentNavigationController.addFragment(R.id.fragment_container, gridFragment, null, getSupportFragmentManager());
+        FragmentNavigationController.addFragment(R.id.fragment_container, recyclerWithGridFragment, null, getSupportFragmentManager());
+        //FragmentNavigationController.addFragment(R.id.fragment_container, gridFragment, null, getSupportFragmentManager());
     }
 
 

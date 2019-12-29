@@ -63,7 +63,7 @@ public class MainGridViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.task_item_grid_view, null);
         }
         final TextView title = convertView.findViewById(R.id.title);
-        final TextView unfinishedTasks = convertView.findViewById(R.id.unfinished_size);
+        final TextView unfinishedTasks = convertView.findViewById(R.id.active_task_count_gird);
         final LinearLayout linearLayout = convertView.findViewById(R.id.tasks_layout);
 
         ArrayList<Integer> tableCounter = new ArrayList<>();

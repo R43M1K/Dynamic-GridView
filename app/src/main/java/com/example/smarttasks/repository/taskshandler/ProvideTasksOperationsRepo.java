@@ -193,6 +193,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
                         taskParams.put("taskName", taskName);
                         taskParams.put("taskFinished", taskFinished);
                         taskParams.put("taskListRealName", taskListRealName);
+                        taskParams.put("tableName", taskListTableName);
                         taskList.add(taskParams);
                         tasks.add(new SingleTask(taskName, taskFinished));
                         tasksIds.add(Integer.valueOf(taskId));

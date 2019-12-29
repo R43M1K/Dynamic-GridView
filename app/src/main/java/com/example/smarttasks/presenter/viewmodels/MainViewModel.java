@@ -153,7 +153,7 @@ public class MainViewModel extends ViewModel{
                 }));
     }
 
-    public LiveData<ArrayList<String>> getNames() {
+    public MutableLiveData<ArrayList<String>> getNames() {
         return allTableNamesList;
     }
 
