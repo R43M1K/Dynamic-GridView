@@ -105,6 +105,7 @@ public class RecyclerWithGridFragment extends Fragment implements RecyclerWithGr
     }
 
     private void allTableTasksListener() {
+        mainViewModel.clearLiveData();
         mainViewModel.getAllTableNames();
         mainViewModel.getNames().observe(lifecycleOwner, tables -> {
             if(tableNames.isEmpty() && !tables.equals(tableNames)) {

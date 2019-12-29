@@ -124,6 +124,11 @@ public class MainViewModel extends ViewModel{
         newTask.setValue(new HashMap<>());
     }
 
+    public void clearLiveData() {
+        allTasksList.setValue(new ArrayList<>());
+        allTableNamesList.setValue(new ArrayList<>());
+    }
+
     public MutableLiveData<HashMap<String,String>> getNewTask() {
         return newTask;
     }
