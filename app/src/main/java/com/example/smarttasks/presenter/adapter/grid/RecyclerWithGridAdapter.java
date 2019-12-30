@@ -108,6 +108,7 @@ public class RecyclerWithGridAdapter extends RecyclerView.Adapter<RecyclerWithGr
 
         public void refresh(ArrayList<GridItem> arrayList) {
             taskItems = arrayList;
+            notifyDataSetChanged();
         }
     }
 

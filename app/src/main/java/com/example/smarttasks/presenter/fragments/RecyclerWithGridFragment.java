@@ -59,7 +59,12 @@ public class RecyclerWithGridFragment extends Fragment implements RecyclerWithGr
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_recycler_with_grid, container, false);
+        return inflater.inflate(R.layout.fragment_recycler_with_grid, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        lifecycleOwner = getViewLifecycleOwner();
 
         taskListFragment = new TaskListViewFragment();
 
@@ -83,8 +88,6 @@ public class RecyclerWithGridFragment extends Fragment implements RecyclerWithGr
         getAllTasksListener(adapter);
 
         init();
-
-        return view;
     }
 
     @Override
@@ -105,8 +108,6 @@ public class RecyclerWithGridFragment extends Fragment implements RecyclerWithGr
     }
 
     private void allTableTasksListener() {
-        mainViewModel.clearLiveData();
-        mainViewModel.getAllTableNames();
         mainViewModel.getNames().observe(lifecycleOwner, tables -> {
             if(tableNames.isEmpty() && !tables.equals(tableNames)) {
                 tableNames = tables;
@@ -118,6 +119,9 @@ public class RecyclerWithGridFragment extends Fragment implements RecyclerWithGr
                 }
             }
         });
+
+        mainViewModel.clearLiveData();
+        mainViewModel.getAllTableNames();
     }
 
     private void getAllTasksListener(RecyclerWithGridAdapter adapter) {
@@ -135,7 +139,6 @@ public class RecyclerWithGridFragment extends Fragment implements RecyclerWithGr
                     gridItem.setActiveTasksText(activeTasksText);
                     gridItemArrayList.add(gridItem);
                     adapter.refresh(gridItemArrayList);
-                    adapter.notifyDataSetChanged();
                 } else {
                     /*
                     mainViewModel.removeTasksList(tasks.get(0).get("tableName").toString());
@@ -184,7 +187,6 @@ public class RecyclerWithGridFragment extends Fragment implements RecyclerWithGr
 
         if(context instanceof MainActivity) {
             mainViewModel = ((MainActivity) context).getMainViewModel();
-            lifecycleOwner = ((MainActivity) context).getLifecycleOwner();
         }
     }
 

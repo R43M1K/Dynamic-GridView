@@ -12,7 +12,6 @@ import com.example.smarttasks.presenter.FragmentNavigationController;
 import com.example.smarttasks.presenter.OnBackPressedListener;
 import com.example.smarttasks.presenter.ViewModelFactory;
 import com.example.smarttasks.presenter.fragments.AddNewTaskFragment;
-import com.example.smarttasks.presenter.fragments.GridFragment;
 import com.example.smarttasks.presenter.fragments.RecyclerWithGridFragment;
 import com.example.smarttasks.presenter.fragments.TaskListViewFragment;
 import com.example.smarttasks.presenter.viewmodels.MainViewModel;
@@ -25,7 +24,6 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     private ViewModelFactory factory;
     private MainViewModel mainViewModel;
     private Fragment recyclerWithGridFragment = new RecyclerWithGridFragment();
-    private Fragment gridFragment = new GridFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
