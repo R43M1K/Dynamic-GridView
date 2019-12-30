@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
 
     private void callFragment() {
         FragmentNavigationController.addFragment(R.id.fragment_container, recyclerWithGridFragment, null, getSupportFragmentManager());
-        //FragmentNavigationController.addFragment(R.id.fragment_container, gridFragment, null, getSupportFragmentManager());
     }
 
 
@@ -46,13 +45,13 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     //OpenTaskListFragment response
     @Override
     public void onFragmentInteraction(Boolean fragmentClosed, Fragment currentFragment) {
-
+        //Might need later
     }
 
     //AddNewTaskFragment Response
     @Override
     public void onAddNewTaskFragmentInteraction(Boolean fragmentClosed) {
-
+        //Might need later
     }
 
 
@@ -79,9 +78,4 @@ public class MainActivity extends AppCompatActivity implements TaskListViewFragm
     }
 
     public LifecycleOwner getLifecycleOwner() { return MainActivity.this; }
-
-    //TODO Before creating new table, check if there is an empty table in database, if it is there
-    // Then just call addTasks() and insert list into table. If there is no  empty table in database
-    // First call getApplicationContext().deleteSharedPreferences("lastTaskListId")
-    // Then call addTasksList() which will automaticly create a new table and fill it with list.
 }

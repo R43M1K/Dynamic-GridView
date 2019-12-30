@@ -45,6 +45,7 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
 
     @Override
     public Single<Boolean> checkTaskListExists(String listName) {
+        Log.d(TAG, "Checked Task List");
         return Single.fromCallable(() -> getAllTableNames().contains(listName));
     }
 

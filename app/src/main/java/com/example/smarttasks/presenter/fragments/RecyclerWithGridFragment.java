@@ -109,13 +109,11 @@ public class RecyclerWithGridFragment extends Fragment implements RecyclerWithGr
 
     private void allTableTasksListener() {
         mainViewModel.getNames().observe(lifecycleOwner, tables -> {
-            if(tableNames.isEmpty() && !tables.equals(tableNames)) {
-                tableNames = tables;
-                gridItemArrayList.clear();
-                if (!tableNames.isEmpty()) {
-                    for (int i = 0; i < tableNames.size(); i++) {
-                        mainViewModel.getAllTasks(tableNames.get(i));
-                    }
+            tableNames = tables;
+            gridItemArrayList.clear();
+            if (!tableNames.isEmpty()) {
+                for (int i = 0; i < tableNames.size(); i++) {
+                    mainViewModel.getAllTasks(tableNames.get(i));
                 }
             }
         });
@@ -126,28 +124,23 @@ public class RecyclerWithGridFragment extends Fragment implements RecyclerWithGr
 
     private void getAllTasksListener(RecyclerWithGridAdapter adapter) {
         mainViewModel.get().observe(lifecycleOwner, tasks -> {
-                if (!tasks.isEmpty()) {
-                    GridItem gridItem = new GridItem();
-                    gridItem.setTaskListName(tasks.get(0).get("tableName").toString());
-                    gridItem.setTaskListRealName((tasks.get(0).get("taskListRealName").toString()));
-                    ArrayList<String> activeTasksText = new ArrayList<>();
-                    for (int j = 0; j < tasks.size(); j++) {
-                        if (tasks.get(j).get("taskFinished").equals("Active")) {
-                            activeTasksText.add(tasks.get(j).get("taskName").toString());
-                        }
+            if (!tasks.isEmpty()) {
+                GridItem gridItem = new GridItem();
+                gridItem.setTaskListName(tasks.get(0).get("tableName").toString());
+                gridItem.setTaskListRealName((tasks.get(0).get("taskListRealName").toString()));
+                ArrayList<String> activeTasksText = new ArrayList<>();
+                for (int j = 0; j < tasks.size(); j++) {
+                    if (tasks.get(j).get("taskFinished").equals("Active")) {
+                        activeTasksText.add(tasks.get(j).get("taskName").toString());
                     }
-                    gridItem.setActiveTasksText(activeTasksText);
-                    gridItemArrayList.add(gridItem);
-                    adapter.refresh(gridItemArrayList);
-                } else {
-                    /*
-                    mainViewModel.removeTasksList(tasks.get(0).get("tableName").toString());
-                    Log.d(TAG, "Empty table removed");
-                    //TODO anotiate method below.
-                    //context.deleteSharedPreferences("lastTaskListId");
-
-                     */
                 }
+                gridItem.setActiveTasksText(activeTasksText);
+                gridItemArrayList.add(gridItem);
+                //Use below checking to not get double call of same table on adapter
+                if(tableNames.size() == gridItemArrayList.size()) {
+                    adapter.refresh(gridItemArrayList);
+                }
+            }
         });
     }
 

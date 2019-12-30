@@ -54,7 +54,7 @@ public class RecyclerWithGridAdapter extends RecyclerView.Adapter<RecyclerWithGr
                 currentTaskListTasks = gridItem.getActiveTasksText();
                 taskListNameView.setText(gridItem.getTaskListRealName());
                 activeTaskCountView.setText(String.valueOf(currentTaskListTasks.size()));
-                //linearLayout.removeAllViews();
+                linearLayout.removeAllViews();
                 for(int i=0; i<currentTaskListTasks.size(); i++) {
                     TextView task = new TextView(context);
                     task.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
