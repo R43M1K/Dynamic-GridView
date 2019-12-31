@@ -43,6 +43,14 @@ public class TasksOperations implements TasksOperationsUseCase {
     }
 
     @Override
+    public Completable updatePoJoWithGetAllTasks(String taskListTableName) {
+        return Completable.fromCallable((Callable<Void>) () -> {
+            provideTasksOperationsInter.updatePoJoWithGetAllTasks(taskListTableName);
+            return null;
+        });
+    }
+
+    @Override
     public Completable addTasks(String taskListRealName, String taskListName, ArrayList<HashMap<String, String>> tasksList) {
         return Completable.fromCallable((Callable<Void>)() -> {
             provideTasksOperationsInter.addTasks(taskListRealName, taskListName, tasksList);

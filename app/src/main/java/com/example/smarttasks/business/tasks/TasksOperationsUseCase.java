@@ -24,6 +24,8 @@ public interface TasksOperationsUseCase {
 
     Completable changeTaskListRealName(String taskListTableName, String taskListRealName);
 
+    Completable updatePoJoWithGetAllTasks(String taskListTableName);
+
     Single<ArrayList<HashMap>> getAllTasks(String taskListTableName);
 
     ArrayList<String> getAllTableNames();

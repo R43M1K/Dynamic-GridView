@@ -184,7 +184,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
             Collections.reverse(taskListIds);
             int taskId = taskListIds.get((Integer) hashMap.get("position"));
             mainViewModel.updateTasks(tasksPoJo.getTaskListName(), taskId, (String) hashMap.get("taskText"), CHANGE_TO_ACTIVE);
-            mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
+            mainViewModel.updatePoJoWithGetAllTasks(tasksPoJo.getTaskListName());
         });
 
         if (textWatcher == null) {
@@ -252,26 +252,16 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         if(!activeTasksList.isEmpty()) {
             //Take only Active tasks
             taskListIds = new ArrayList<>();
-            ArrayList<String> tasks = new ArrayList<>();
-            for(int i=0; i<tasksPoJo.getTasks().size(); i++) {
-                tasks.add(tasksPoJo.getTasks().get(i).getTask());
-            }
             for(int i=0; i<tasksPoJo.getTasksIds().size(); i++) {
                 if(tasksPoJo.getTaskCondition().get(i).equals("Active")) {
                     taskListIds.add(tasksPoJo.getTasksIds().get(i));
                 }
             }
             Collections.reverse(taskListIds);
-            Collections.reverse(tasks);
-            int currentPosition = tasks.indexOf(currentTask);
 
             mainViewModel.updateTasks(taskListName, taskListIds.get(position), currentTask, CHANGE_TO_FINISHED);
             //Change last removed task condition to Finished in taskPoJo TaskCondition ArrayList
-            ArrayList<String> conditionList = tasksPoJo.getTaskCondition();
-            Collections.reverse(conditionList);
-            conditionList.set(currentPosition, CHANGE_TO_FINISHED);
-            Collections.reverse(conditionList);
-            tasksPoJo.setTaskCondition(conditionList);
+            mainViewModel.updatePoJoWithGetAllTasks(taskListName);
             finishedTasksList.add(currentTask);
             String finishedCountText = finishedTasksList.size() + FINISHED_TASKS_TEXT;
             finishedTaskCountView.setText(finishedCountText);

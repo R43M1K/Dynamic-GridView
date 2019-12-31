@@ -147,6 +147,15 @@ public class MainViewModel extends ViewModel{
         return allTasksList;
     }
 
+    public void updatePoJoWithGetAllTasks(String taskListTableName) {
+        compositeDisposable.add(tasksOperationsUseCase
+                .updatePoJoWithGetAllTasks(taskListTableName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        );
+    }
+
     public void getAllTableNames() {
 
         compositeDisposable.add(Single.fromCallable(() -> tasksOperationsUseCase.getAllTableNames())

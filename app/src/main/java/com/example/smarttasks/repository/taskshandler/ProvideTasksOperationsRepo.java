@@ -214,6 +214,35 @@ public class ProvideTasksOperationsRepo implements ProvideTasksOperationsInter {
     }
 
     @Override
+    public void updatePoJoWithGetAllTasks(String taskListTableName) {
+        Cursor cursor = db.query(taskListTableName, null, null, null, null, null,
+                DatabaseParams.DatabaseConstants.COLUMN_TIMESTAMP + " DESC");
+        ArrayList<SingleTask> tasks = new ArrayList<>();
+        ArrayList<Integer> tasksIds = new ArrayList<>();
+        ArrayList<String> tasksConditions = new ArrayList<>();
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    String taskId = String.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants._ID)));
+                    String taskName = cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants.COLUMN_TASKS_NAMES));
+                    String taskFinished = cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants.COLUMN_TASKS_FINISHED));
+                    String taskListRealName = cursor.getString(cursor.getColumnIndex(DatabaseParams.DatabaseConstants.COLUMN_TABLE_REAL_NAME));
+                    tasks.add(new SingleTask(taskName, taskFinished));
+                    tasksIds.add(Integer.valueOf(taskId));
+                    tasksConditions.add(taskFinished);
+                    tasksPoJo.setTaskListName(taskListTableName);
+                    tasksPoJo.setTaskListRealName(taskListRealName);
+                } while (cursor.moveToNext());
+                Log.d(TAG, "Got all list items from table");
+            }
+            cursor.close();
+            tasksPoJo.setTasks(tasks);
+            tasksPoJo.setTasksIds(tasksIds);
+            tasksPoJo.setTaskCondition(tasksConditions);
+        }
+    }
+
+    @Override
     public ArrayList<String> getAllTableNames() {
         ArrayList<String> tableNames = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);

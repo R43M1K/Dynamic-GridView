@@ -23,6 +23,8 @@ public interface ProvideTasksOperationsInter {
 
     void changeTaskListRealName(String taskListTableName, String taskListRealName);
 
+    void updatePoJoWithGetAllTasks(String taskListTableName);
+
     boolean isTaskListEmpty(String taskListTableName);
 
     Single<ArrayList<HashMap>> getAllTasks(String taskListTableName);
