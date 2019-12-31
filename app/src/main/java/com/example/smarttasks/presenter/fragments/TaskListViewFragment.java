@@ -175,6 +175,16 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         //Get edited task from active recyclerView
         activeAdapter.getCurrentTask().observe(this, hashMap -> {
             activeTasksList.set(((Integer) hashMap.get("position")), (String) hashMap.get("taskText"));
+            taskListIds = new ArrayList<>();
+            for(int i=0; i<tasksPoJo.getTasksIds().size(); i++) {
+                if(tasksPoJo.getTaskCondition().get(i).equals("Active")) {
+                    taskListIds.add(tasksPoJo.getTasksIds().get(i));
+                }
+            }
+            Collections.reverse(taskListIds);
+            int taskId = taskListIds.get((Integer) hashMap.get("position"));
+            mainViewModel.updateTasks(tasksPoJo.getTaskListName(), taskId, (String) hashMap.get("taskText"), CHANGE_TO_ACTIVE);
+            mainViewModel.getAllTasks(tasksPoJo.getTaskListName());
         });
 
         if (textWatcher == null) {

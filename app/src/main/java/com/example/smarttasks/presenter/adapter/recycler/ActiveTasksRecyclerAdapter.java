@@ -46,12 +46,16 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
 
         public EditText activeTask;
         public TextView activeTaskId;
+        private CustomEditTextListener customEditTextListener;
 
-        public TaskViewHolder(@NonNull View itemView, OnItemClickListener listener) {
+        public TaskViewHolder(@NonNull View itemView, OnItemClickListener listener, CustomEditTextListener customEditTextListener) {
             super(itemView);
 
             activeTask = itemView.findViewById(R.id.active_view);
             activeTaskId = itemView.findViewById(R.id.active_task_id);
+            this.customEditTextListener = customEditTextListener;
+
+            activeTask.addTextChangedListener(customEditTextListener);
 
             itemView.setOnClickListener(v -> {
                 if(listener != null){
@@ -69,7 +73,7 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item_active,parent,false);
-        return new TaskViewHolder(v, mListener);
+        return new TaskViewHolder(v, mListener, new CustomEditTextListener());
     }
 
     @Override
@@ -78,36 +82,35 @@ public class ActiveTasksRecyclerAdapter extends RecyclerView.Adapter<ActiveTasks
             final Integer pos = position;
             String numberOfTask = String.valueOf(position + 1);
             holder.activeTaskId.setText(numberOfTask);
-            holder.activeTask.setText(activeTasks.get(position));
+            holder.customEditTextListener.updatePosition(holder.getAdapterPosition());
+            holder.activeTask.setText(activeTasks.get(holder.getAdapterPosition()));
             //TODO Use different logic to catch edittext change
-            /*
-            holder.activeTask.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                    if(!activeTasks.get(position).equals(s.toString())) {
-                        currentTask.put("position", pos);
-                        currentTask.put("taskText", s.toString());
-                        taskLive.setValue(currentTask);
-                        Log.d(TAG, "EditText was changed");
-                    }
-
-
-                }
-            });
-
-             */
+            Log.d(TAG, "OnBindView position " + position);
         }
+    }
+
+    public class CustomEditTextListener implements TextWatcher {
+        private int position;
+
+        public void updatePosition(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if(!activeTasks.get(position).equals(s.toString())) {
+                currentTask.put("position", position);
+                currentTask.put("taskText", s.toString());
+                taskLive.setValue(currentTask);
+                Log.d(TAG, "onTextChanged position " + position);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {}
     }
 
     public MutableLiveData<HashMap> getCurrentTask() {

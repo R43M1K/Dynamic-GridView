@@ -34,7 +34,7 @@ import com.example.smarttasks.repository.services.tasks.TasksPoJo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AddNewTaskFragment extends Fragment{
+public class AddNewTaskFragment extends Fragment implements OnBackPressedListener{
 
     //Constants
     private final String TAG = getClass().toString();
@@ -113,6 +113,11 @@ public class AddNewTaskFragment extends Fragment{
             mainViewModel.setNeedBlur(false);
             FragmentNavigationController.removeFragmentPopBackStackByTag(this, fragmentManager, BACK_STACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        removeMe();
     }
 
     @Override
