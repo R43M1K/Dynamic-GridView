@@ -1,10 +1,13 @@
 package com.example.smarttasks.presenter.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -38,6 +42,7 @@ import com.example.smarttasks.repository.services.operations.BlurBuilder;
 import com.example.smarttasks.repository.services.preferences.PreferencesService;
 import com.example.smarttasks.repository.services.preferences.PreferencesServiceInter;
 import com.example.smarttasks.repository.services.tasks.TasksPoJo;
+import com.github.jinatonic.confetti.CommonConfetti;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +66,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     private TextView finishedTaskCountView;
     private Button addTaskView;
     private LinearLayout listLayout;
-    private View mainView;
+
 
     //Fragments
     private Fragment fragment;
@@ -82,6 +87,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     private ArrayList<String> activeTasksList = new ArrayList<>();
     private ArrayList<String> finishedTasksList = new ArrayList<>();
     private boolean newTask;
+    private boolean isConfettiShowing = false;
     private boolean isKeyboardShowing = false;
 
 
@@ -219,7 +225,6 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         blurListener();
         keyboardDetect(view);
 
-        mainView = view;
         return view;
     }
 
@@ -268,7 +273,7 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
             String activeCountText = activeTasksList.size() + ACTIVE_TASKS_TEXT;
             activeTaskCountView.setText(activeCountText);
         } else {
-            removeMe();
+            callConfetti();
         }
         //Notify both recyclerViews that items have changed
         activeAdapter.notifyDataSetChanged();
@@ -288,14 +293,29 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
         });
     }
 
+    private void callConfetti() {
+        addTaskView.setVisibility(View.GONE);
+        isConfettiShowing = true;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("CONGRATULATIONS \nYOU HAVE FINISHED ALL TASKS")
+                .setPositiveButton("OK", (dialog, id) -> {
+                    removeMe();
+                })
+                .setOnCancelListener(dialog -> {
+                    removeMe();
+                });
+        builder.create();
+        builder.show();
+        CommonConfetti.rainingConfetti(listLayout, new int[] { Color.WHITE, Color.YELLOW })
+                .stream(20000);
+    }
+
     private void blurListener() {
         mainViewModel.getNeedBlur().observe(this, apply -> {
             Blurry.delete(listLayout);
             addTaskView.setVisibility(View.VISIBLE);
         });
-
     }
-
 
     //Observe a new task from addNewTask fragment
     private void newTaskListener() {
@@ -314,7 +334,6 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
     }
 
     private void keyboardDetect(View contentView) {
-
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(
                 () -> {
                     Rect r = new Rect();
@@ -337,7 +356,11 @@ public class TaskListViewFragment extends Fragment implements OnBackPressedListe
                         // keyboard is closed
                         if (isKeyboardShowing) {
                             isKeyboardShowing = false;
-                            addTaskView.setVisibility(View.VISIBLE);
+                            if(isConfettiShowing) {
+                                addTaskView.setVisibility(View.GONE);
+                            }else{
+                                addTaskView.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
                 });

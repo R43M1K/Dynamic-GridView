@@ -48,5 +48,9 @@ dependencies {
     //ViewModels
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 
+    //Blurry
     implementation 'jp.wasabeef:blurry:3.0.0'
+
+    //Confetti
+    implementation 'com.github.jinatonic.confetti:confetti:1.1.2'
 }
